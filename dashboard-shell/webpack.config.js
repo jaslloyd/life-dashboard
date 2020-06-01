@@ -6,16 +6,15 @@ module.exports = {
   entry: "./src/index",
   mode: "development",
   devtool: "source-map",
-  //   output: {
-  //     path: __dirname + "/public",
-  //     publicPath: "/",
-  //     filename: "bundle.js",
-  //   },
-  output: {
-    publicPath: "http://localhost:3001/",
+  // This tells webpack-dev-server to serve the files from the dist directory on localhost:8080
+  devServer: {
+    contentBase: "./dist",
+    port: "3001",
   },
-  optimization: {
-    minimize: false,
+  output: {
+    path: __dirname + "/public",
+    publicPath: "/",
+    filename: "[name].bundle.js",
   },
   resolve: {
     extensions: [".jsx", ".js"],
