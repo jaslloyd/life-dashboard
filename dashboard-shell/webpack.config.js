@@ -54,6 +54,10 @@ module.exports = (env) => {
             presets: ["@babel/preset-react", "@babel/preset-typescript"],
           },
         },
+        {
+          test: /\.css$/,
+          use: [MiniCssExtractPlugin.loader, "css-loader"],
+        },
       ],
     },
     // Loaders are used to transform certain types of modules, plugins can be leveraged to perform a wider range of tasks like bundle optimization, asset management and injection of environment variables.
