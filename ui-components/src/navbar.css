@@ -35,8 +35,7 @@
 
 .nav-item a:hover {
   filter: grayscale(0%) opacity(1);
-  background: #f4f4f4;
-  color: black;
+  background: #f5642d;
 }
 
 .nav-item a span {
