@@ -5,6 +5,7 @@ const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const ModuleFederationPlugin = require("webpack").container
   .ModuleFederationPlugin;
+const path = require("path");
 
 module.exports = (env) => {
   const isEnvProduction = env.production;
@@ -30,7 +31,7 @@ module.exports = (env) => {
     },
     // This tells webpack-dev-server to serve the files from the dist directory on localhost:8080
     devServer: {
-      contentBase: "./dist",
+      contentBase: path.join(__dirname, "dist"),
       port: "3001",
     },
     // Customize Webpack Optimization
@@ -68,13 +69,15 @@ module.exports = (env) => {
         chunkFilename: "static/css/[id].[contenthash].chunk.css",
       }),
       new ModuleFederationPlugin({
-        name: "dashboard-shell",
-        library: { type: "var", name: "dashboard-shell" },
+        name: "dashboardshell",
+        library: { type: "var", name: "dashboardshell" },
         filename: "remoteEntry.js",
-        //TODO: Fill in below later
-        remotes: {},
         exposes: {},
-        shared: [],
+        //TODO: Fill in below later
+        remotes: {
+          uicomponents: "uicomponents",
+        },
+        shared: ["react", "react-dom"],
       }),
       // The HtmlWebpackPlugin simplifies creation of HTML files to serve your webpack bundles. This is especially useful for webpack bundles that include a hash in the filename which changes every compilation
       new HtmlWebpackPlugin({
