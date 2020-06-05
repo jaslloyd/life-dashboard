@@ -4,9 +4,11 @@ import "./index.css";
 
 const App: React.FC = () => (
   <>
-    <Navbar />
+    <aside>
+      <Navbar />
+    </aside>
     <main>
-      <h1>Hello from React Typescriptrm</h1>
+      <h1>Hello from React Typescript</h1>
     </main>
   </>
 );
