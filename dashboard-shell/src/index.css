@@ -1,0 +1,13 @@
+:root {
+  font-size: 16px;
+  --primary: #041e42;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+main {
+  margin-left: 5rem;
+}
