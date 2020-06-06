@@ -4,6 +4,9 @@
     "packages/*"
   ],
   "name": "life-dashboard",
+  "scripts": {
+    "start": "lerna run --scope @life-dashboard/* --parallel start"
+  },
   "devDependencies": {
     "@babel/core": "^7.8.6",
     "@babel/preset-react": "^7.8.3",
