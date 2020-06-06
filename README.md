@@ -14,15 +14,14 @@ The main reason is to solve the problems I personally have which I think is a gr
 
 - Monorepos
 - Microfrontends / Module Federation
+- Accessibility
 - Server side rendering
-- GraphQL
-- Webpack from scratch
-- [insert more here...]
+- GraphQL Refresher
+- Webpack Refresher
 
 ## Resources
 
 This concept already exists but I want to make it personal to me and maybe later make it more generic.
 
 [Life Dashboard](https://github.com/Reportr/dashboard)
-
 [Dashboard Example #1](https://bootsnipp.com/snippets/rlqEd)
