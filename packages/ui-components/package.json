@@ -1,0 +1,21 @@
+{
+  "name": "@life-dashboard/ui-components",
+  "version": "0.0.0",
+  "private": true,
+  "description": "UI Components",
+  "scripts": {
+    "watch": "webpack --watch",
+    "build": "webpack --env.production",
+    "start": "webpack-dev-server --open --env.development",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jason Lloyd",
+  "license": "MIT",
+  "devDependencies": {
+    "webpack-cli": "^3.3.11"
+  },
+  "dependencies": {
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
+  }
+}
