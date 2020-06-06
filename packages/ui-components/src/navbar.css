@@ -1,6 +1,6 @@
 .navbar {
   width: 5rem;
-  background-color: var(--primary);
+  background-color: var(--primary, #041e42);
   height: 100vh;
   position: fixed;
   top: 0;
