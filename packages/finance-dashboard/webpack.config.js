@@ -32,7 +32,7 @@ module.exports = (env) => {
     // This tells webpack-dev-server to serve the files from the dist directory on localhost:8080
     devServer: {
       contentBase: path.join(__dirname, "dist"),
-      port: "3003",
+      port: "3002",
     },
     // Customize Webpack Optimization
     optimization: {

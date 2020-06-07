@@ -74,9 +74,7 @@ module.exports = (env) => {
         filename: "remoteEntry.js",
         exposes: {},
         //TODO: Fill in below later
-        remotes: {
-          uicomponents: "uicomponents",
-        },
+        remotes: {},
         shared: ["react", "react-dom"],
       }),
       // The HtmlWebpackPlugin simplifies creation of HTML files to serve your webpack bundles. This is especially useful for webpack bundles that include a hash in the filename which changes every compilation

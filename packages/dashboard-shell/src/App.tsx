@@ -1,5 +1,5 @@
 import React from "react";
-import Navbar from "uicomponents/Navbar";
+import Navbar from "./Navbar";
 import "./index.css";
 
 const App: React.FC = () => (
