@@ -26,7 +26,6 @@
     "webpack-dev-server": "^3.11.0"
   },
   "dependencies": {
-    "@life-dashboard/dashboard": "file:packages/dashboard-shell",
-    "@life-dashboard/ui-components": "file:packages/ui-components"
+    "@life-dashboard/dashboard": "file:packages/dashboard-shell"
   }
 }
