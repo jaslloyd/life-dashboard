@@ -11,6 +11,11 @@ router.get("/login/:code", async (req, res) => {
   });
   try {
     await degiro.login();
+
+    res.cookie("SESSION_ID", degiro.session.id, {
+      maxAge: 900000,
+      httpOnly: true,
+    });
     res.send({
       status: "success",
       message: "Login Successful",
@@ -28,10 +33,9 @@ router.get("/login/:code", async (req, res) => {
 });
 
 // TODO: Use Cookies to get session id later
-router.get("/portfolio/:sid", async (req, res) => {
-  console.log(req.params.sid);
+router.get("/portfolio", async (req, res) => {
   const degiro = DeGiro.create({
-    sessionId: req.params.sid,
+    sessionId: req.cookies.SESSION_ID,
   });
 
   try {
