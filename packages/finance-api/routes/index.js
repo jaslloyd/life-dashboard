@@ -89,8 +89,17 @@ router.get("/portfolio", async (req, res) => {
 
       console.log(totalPortfolioValue);
       console.log(totalBreakEvenPrice);
+      const USD_TOTAL = result
+        .filter((result) => result.stockCurrency === "USD")
+        .reduce((acc, curr) => acc + curr.totalPositionValue, 0);
+      const EUR_TOTAL = result
+        .filter((result) => result.stockCurrency === "EUR")
+        .reduce((acc, curr) => acc + curr.totalPositionValue, 0);
+      console.log(USD_TOTAL);
+      console.log(EUR_TOTAL);
 
       res.json({
+        result,
         portfolio,
       });
     } catch (e) {
