@@ -14,7 +14,7 @@ router.get("/login/:code", async (req, res) => {
 
     // TODO: Find out age of degiro cookies
     res.cookie("SESSION_ID", degiro.session.id, {
-      maxAge: 900000,
+      maxAge: 90000000,
       httpOnly: true,
     });
     res.send({
@@ -51,8 +51,35 @@ router.get("/portfolio", async (req, res) => {
       await degiro.updateConfig();
       const portfolio = await degiro.getPortfolio();
 
+      const productIds = portfolio.portfolio.map((p) => p.id);
+      const productNames = await degiro.getProductsByIds(productIds);
+
+      const result = Object.keys(productNames.data).map((pid) => {
+        const personalProductInfo = portfolio.portfolio.find(
+          (p) => p.id === pid
+        ).value;
+
+        const findSpecificValue = (personalValues, valueToFind) =>
+          personalValues.find((values) => values.name === valueToFind).value;
+
+        return {
+          id: pid,
+          tickerSymbol: productNames.data[pid].symbol,
+          name: productNames.data[pid].name,
+          productType: productNames.data[pid].productType,
+          sharesHeld: findSpecificValue(personalProductInfo, "size"),
+          currentStockValue: findSpecificValue(personalProductInfo, "price"),
+          stockValueBreakEvenPrice: findSpecificValue(
+            personalProductInfo,
+            "breakEvenPrice"
+          ),
+          totalPositionValue: findSpecificValue(personalProductInfo, "value"),
+          stockCurrency: productNames.data[pid].currency,
+        };
+      });
+
       res.json({
-        portfolio,
+        result,
       });
     } catch (e) {
       res.json({
