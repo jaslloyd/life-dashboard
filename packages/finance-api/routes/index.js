@@ -55,6 +55,7 @@ router.get("/portfolio", async (req, res) => {
       const productNames = await degiro.getProductsByIds(productIds);
 
       let totalPortfolioValue = 0;
+      let totalBreakEvenPrice = 0;
 
       const result = Object.keys(productNames.data).map((pid) => {
         const personalProductInfo = portfolio.portfolio.find(
@@ -64,7 +65,11 @@ router.get("/portfolio", async (req, res) => {
         const findSpecificValue = (personalValues, valueToFind) =>
           personalValues.find((values) => values.name === valueToFind).value;
 
+        // TODO: These give me very rough estimates, it doesn't account for currency or other factors, will do later
         totalPortfolioValue += findSpecificValue(personalProductInfo, "value");
+        totalBreakEvenPrice +=
+          findSpecificValue(personalProductInfo, "breakEvenPrice") *
+          findSpecificValue(personalProductInfo, "size");
 
         return {
           id: pid,
@@ -83,6 +88,7 @@ router.get("/portfolio", async (req, res) => {
       });
 
       console.log(totalPortfolioValue);
+      console.log(totalBreakEvenPrice);
 
       res.json({
         portfolio,
