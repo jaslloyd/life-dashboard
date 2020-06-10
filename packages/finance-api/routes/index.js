@@ -54,6 +54,8 @@ router.get("/portfolio", async (req, res) => {
       const productIds = portfolio.portfolio.map((p) => p.id);
       const productNames = await degiro.getProductsByIds(productIds);
 
+      let totalPortfolioValue = 0;
+
       const result = Object.keys(productNames.data).map((pid) => {
         const personalProductInfo = portfolio.portfolio.find(
           (p) => p.id === pid
@@ -61,6 +63,8 @@ router.get("/portfolio", async (req, res) => {
 
         const findSpecificValue = (personalValues, valueToFind) =>
           personalValues.find((values) => values.name === valueToFind).value;
+
+        totalPortfolioValue += findSpecificValue(personalProductInfo, "value");
 
         return {
           id: pid,
@@ -78,8 +82,10 @@ router.get("/portfolio", async (req, res) => {
         };
       });
 
+      console.log(totalPortfolioValue);
+
       res.json({
-        result,
+        portfolio,
       });
     } catch (e) {
       res.json({
