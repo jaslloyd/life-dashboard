@@ -9,6 +9,7 @@ const FinanceApp: React.FC = () => (
 );
 
 const InvestmentTable: React.FC = () => {
+  // TODO: Move all the api calls to Finance app, like Container Presentation component pattern
   const [apiResult, setApiResult] = React.useState(null);
   const [status, setStatus] = React.useState("loading");
 
