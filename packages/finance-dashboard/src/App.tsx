@@ -1,14 +1,21 @@
 import React from "react";
 import DashboardShell from "dashboardshell/DashboardShell";
 
-const FinanceApp: React.FC = () => (
-  <DashboardShell>
-    <h1>Finance Application</h1>
-    <InvestmentTable />
-  </DashboardShell>
-);
+type Currency = "EUR" | "USD";
 
-const InvestmentTable: React.FC = () => {
+interface Portfolio {
+  id: string;
+  tickerSymbol: string;
+  name: string;
+  productType: string;
+  sharesHeld: number;
+  currentStockValue: number;
+  stockValueBreakEvenPrice: number;
+  totalPositionValue: number;
+  stockCurrency: Currency;
+}
+
+const FinanceApp: React.FC = () => {
   // TODO: Move all the api calls to Finance app, like Container Presentation component pattern
   const [apiResult, setApiResult] = React.useState(null);
   const [status, setStatus] = React.useState("loading");
@@ -30,17 +37,33 @@ const InvestmentTable: React.FC = () => {
           }
         }
       } catch (e) {
-        console.log("Shittt..");
+        console.error(e);
         setStatus("error");
       }
     };
     fetchData();
   }, []);
-  return status === "idle" ? (
+
+  return (
+    <DashboardShell>
+      <h1>Finance Application</h1>
+      {status === "idle" && <InvestmentTable portfolioData={apiResult} />}
+
+      {status === "error" && <h1>An unexpected error occurred...</h1>}
+
+      {status === "showLogin" && <h1>Show login page here</h1>}
+    </DashboardShell>
+  );
+};
+
+const InvestmentTable: React.FC<{ portfolioData: Portfolio }> = ({
+  portfolioData,
+}) => {
+  return (
     <table>
       <thead>
         <tr>
-          <td>One - {status}</td>
+          <td>One</td>
         </tr>
       </thead>
       <tbody>
@@ -49,8 +72,6 @@ const InvestmentTable: React.FC = () => {
         </tr>
       </tbody>
     </table>
-  ) : (
-    <>Status: {status}</>
   );
 };
 export default FinanceApp;
