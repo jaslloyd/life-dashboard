@@ -89,16 +89,18 @@ router.get("/portfolio", async (req, res) => {
 
       console.log(totalPortfolioValue);
       console.log(totalBreakEvenPrice);
+      //TODO: Convert this USD total to Euro
+      // Add the both above will only give me an approx value because degiro does crap tonnes of stuff around calculating the total portfolio value but approx is good enough
       const USD_TOTAL = result
         .filter((result) => result.stockCurrency === "USD")
         .reduce((acc, curr) => acc + curr.totalPositionValue, 0);
       const EUR_TOTAL = result
         .filter((result) => result.stockCurrency === "EUR")
         .reduce((acc, curr) => acc + curr.totalPositionValue, 0);
-      console.log(USD_TOTAL);
-      console.log(EUR_TOTAL);
 
       res.json({
+        USD_TOTAL,
+        EUR_TOTAL,
         result,
         portfolio,
       });
