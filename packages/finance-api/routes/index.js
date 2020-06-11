@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const DeGiro = require("degiro");
+const fetch = require("node-fetch");
 
 // TODO: Use POST request
 router.get("/login/:code", async (req, res) => {
@@ -89,6 +90,10 @@ router.get("/portfolio", async (req, res) => {
 
       console.log(totalPortfolioValue);
       console.log(totalBreakEvenPrice);
+      const { rates } = await (
+        await fetch("https://api.exchangeratesapi.io/latest?base=USD")
+      ).json();
+
       //TODO: Convert this USD total to Euro
       // Add the both above will only give me an approx value because degiro does crap tonnes of stuff around calculating the total portfolio value but approx is good enough
       const USD_TOTAL = result
@@ -97,6 +102,8 @@ router.get("/portfolio", async (req, res) => {
       const EUR_TOTAL = result
         .filter((result) => result.stockCurrency === "EUR")
         .reduce((acc, curr) => acc + curr.totalPositionValue, 0);
+
+      console.log("USD Total Exchanged into EUR " + USD_TOTAL * rates.EUR);
 
       res.json({
         USD_TOTAL,
