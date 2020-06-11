@@ -21,7 +21,7 @@ module.exports = (env) => {
     // instructs webpack on how and where it should output your bundles, assets and anything else you bundle or load with webpack.
     output: {
       path: __dirname + "/build",
-      publicPath: "/",
+      publicPath: "http://localhost:3001/",
       filename: isEnvProduction
         ? "static/js/[name].[contenthash].js"
         : isEnvDevelopment && "static/js/bundle.js",
@@ -72,7 +72,9 @@ module.exports = (env) => {
         name: "dashboardshell",
         library: { type: "var", name: "dashboardshell" },
         filename: "remoteEntry.js",
-        exposes: {},
+        exposes: {
+          DashboardShell: "./src/App",
+        },
         //TODO: Fill in below later
         remotes: {},
         shared: ["react", "react-dom"],

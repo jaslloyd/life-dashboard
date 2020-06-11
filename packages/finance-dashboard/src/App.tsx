@@ -1,8 +1,9 @@
 import React from "react";
+import DashboardShell from "dashboardshell/DashboardShell";
 
 const FinanceApp: React.FC = () => (
-  <>
-    <h1>Finance Dashboard</h1>
-  </>
+  <DashboardShell>
+    <h1>Finance Application</h1>
+  </DashboardShell>
 );
 export default FinanceApp;

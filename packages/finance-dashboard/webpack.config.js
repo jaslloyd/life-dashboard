@@ -75,7 +75,7 @@ module.exports = (env) => {
         exposes: {},
         //TODO: Fill in below later
         remotes: {
-          uicomponents: "uicomponents",
+          dashboardshell: "dashboardshell",
         },
         shared: ["react", "react-dom"],
       }),
