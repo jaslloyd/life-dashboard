@@ -55,7 +55,6 @@ router.get("/portfolio", async (req, res) => {
       const productIds = portfolio.portfolio.map((p) => p.id);
       const productNames = await degiro.getProductsByIds(productIds);
 
-      let totalPortfolioValue = 0;
       let totalBreakEvenPrice = 0;
 
       const result = Object.keys(productNames.data).map((pid) => {
@@ -67,7 +66,6 @@ router.get("/portfolio", async (req, res) => {
           personalValues.find((values) => values.name === valueToFind).value;
 
         // TODO: These give me very rough estimates, it doesn't account for currency or other factors, will do later
-        totalPortfolioValue += findSpecificValue(personalProductInfo, "value");
         totalBreakEvenPrice +=
           findSpecificValue(personalProductInfo, "breakEvenPrice") *
           findSpecificValue(personalProductInfo, "size");
@@ -79,16 +77,18 @@ router.get("/portfolio", async (req, res) => {
           productType: productNames.data[pid].productType,
           sharesHeld: findSpecificValue(personalProductInfo, "size"),
           currentStockValue: findSpecificValue(personalProductInfo, "price"),
-          stockValueBreakEvenPrice: findSpecificValue(
+          stockValueBreakEvenPrice: +findSpecificValue(
             personalProductInfo,
             "breakEvenPrice"
-          ),
-          totalPositionValue: findSpecificValue(personalProductInfo, "value"),
+          ).toFixed(2),
+          totalPositionValue: +findSpecificValue(
+            personalProductInfo,
+            "value"
+          ).toFixed(2),
           stockCurrency: productNames.data[pid].currency,
         };
       });
 
-      console.log(totalPortfolioValue);
       console.log(totalBreakEvenPrice);
       const { rates } = await (
         await fetch("https://api.exchangeratesapi.io/latest?base=USD")
