@@ -25,24 +25,20 @@ router.get("/login/:code", async (req, res) => {
       accountId: degiro.session.account,
     });
   } catch (e) {
-    res
-      .json({
-        status: "failed",
-        message: e.toString(),
-      })
-      .status(500);
+    res.status(500).json({
+      status: "failed",
+      message: e.toString(),
+    });
   }
 });
 
 // TODO: Use Cookies to get session id later
 router.get("/portfolio", async (req, res) => {
   if (!req.cookies.SESSION_ID) {
-    res
-      .json({
-        status: "failed",
-        message: "Please re-login to your investment account",
-      })
-      .status(401);
+    res.status(401).json({
+      status: "failed",
+      message: "Please re-login to your investment account",
+    });
   } else {
     const degiro = DeGiro.create({
       sessionId: req.cookies.SESSION_ID,
@@ -112,7 +108,7 @@ router.get("/portfolio", async (req, res) => {
         portfolio,
       });
     } catch (e) {
-      res.json({
+      res.status(500).json({
         status: "failed",
         message: e.toString(),
       });
