@@ -36,7 +36,7 @@ const FinanceApp: React.FC = () => {
       if (res.ok) {
         const resultJSON = await res.json();
 
-        setApiResult(resultJSON);
+        setApiResult(resultJSON.result);
         setStatus("idle");
       } else {
         if (res.status === 401) {
@@ -103,17 +103,32 @@ const Login: React.FC<{ onSubmit: (code: string) => void }> = ({
   );
 };
 
-const InvestmentTable: React.FC<{ portfolioData: Portfolio }> = ({
+const InvestmentTable: React.FC<{ portfolioData: Portfolio[] }> = ({
   portfolioData,
 }) => {
   return (
     <table>
       <thead>
         <tr>
-          <td>One</td>
+          {Object.keys(portfolioData[0]).map((title) => (
+            <td>{title}</td>
+          ))}
         </tr>
       </thead>
       <tbody>
+        {portfolioData.map((lineItem) => (
+          <tr>
+            <td>{lineItem.id}</td>
+            <td>{lineItem.tickerSymbol}</td>
+            <td>{lineItem.name}</td>
+            <td>{lineItem.productType}</td>
+            <td>{lineItem.sharesHeld}</td>
+            <td>{lineItem.currentStockValue}</td>
+            <td>{lineItem.stockValueBreakEvenPrice}</td>
+            <td>{lineItem.totalPositionValue}</td>
+            <td>{lineItem.stockCurrency}</td>
+          </tr>
+        ))}
         <tr>
           <td>Damn</td>
         </tr>
