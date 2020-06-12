@@ -14,10 +14,10 @@ router.get("/login/:code", async (req, res) => {
     await degiro.login();
 
     // TODO: Find out age of degiro cookies
-    res.cookie("SESSION_ID", degiro.session.id, {
-      maxAge: 90000000,
-      httpOnly: true,
-    });
+    // res.cookie("SESSION_ID", degiro.session.id, {
+    //   maxAge: 90000000,
+    //   httpOnly: true,
+    // });
     res.send({
       status: "success",
       message: "Login Successful",
@@ -25,7 +25,7 @@ router.get("/login/:code", async (req, res) => {
       accountId: degiro.session.account,
     });
   } catch (e) {
-    res.status(500).json({
+    res.status(401).json({
       status: "failed",
       message: e.toString(),
     });
@@ -34,14 +34,15 @@ router.get("/login/:code", async (req, res) => {
 
 // TODO: Use Cookies to get session id later
 router.get("/portfolio", async (req, res) => {
-  if (!req.cookies.SESSION_ID) {
+  console.log(req.headers);
+  if (!req.headers.authorization) {
     res.status(401).json({
       status: "failed",
       message: "Please re-login to your investment account",
     });
   } else {
     const degiro = DeGiro.create({
-      sessionId: req.cookies.SESSION_ID,
+      sessionId: req.headers.authorization,
     });
 
     try {
