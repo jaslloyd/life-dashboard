@@ -110,28 +110,30 @@ const InvestmentTable: React.FC<{ portfolioData: Portfolio[] }> = ({
     <table>
       <thead>
         <tr>
-          {Object.keys(portfolioData[0]).map((title) => (
-            <td>{title}</td>
-          ))}
+          <td>Ticker</td>
+          <td>Name</td>
+          <td>Product Type</td>
+          <td># Shares Held</td>
+          <td>Current Stock Value</td>
+          <td>Break Event Point</td>
+          <td>Total Position Value</td>
         </tr>
       </thead>
       <tbody>
         {portfolioData.map((lineItem) => (
-          <tr>
-            <td>{lineItem.id}</td>
+          <tr key={lineItem.id}>
             <td>{lineItem.tickerSymbol}</td>
             <td>{lineItem.name}</td>
             <td>{lineItem.productType}</td>
             <td>{lineItem.sharesHeld}</td>
             <td>{lineItem.currentStockValue}</td>
             <td>{lineItem.stockValueBreakEvenPrice}</td>
-            <td>{lineItem.totalPositionValue}</td>
-            <td>{lineItem.stockCurrency}</td>
+            <td>
+              {lineItem.stockCurrency === "USD" ? "$" : "€"}
+              {lineItem.totalPositionValue}
+            </td>
           </tr>
         ))}
-        <tr>
-          <td>Damn</td>
-        </tr>
       </tbody>
     </table>
   );
