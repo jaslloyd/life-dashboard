@@ -95,19 +95,22 @@ router.get("/portfolio", async (req, res) => {
       // Add the both above will only give me an approx value because degiro does crap tonnes of stuff around calculating the total portfolio value but approx is good enough
       const USD_TOTAL = result
         .filter((result) => result.stockCurrency === "USD")
-        .reduce((acc, curr) => acc + curr.totalPositionValue, 0);
+        .reduce((acc, curr) => acc + curr.totalPositionValue, 0)
+        .toFixed(2);
       const EUR_TOTAL = result
         .filter((result) => result.stockCurrency === "EUR")
-        .reduce((acc, curr) => acc + curr.totalPositionValue, 0);
+        .reduce((acc, curr) => acc + curr.totalPositionValue, 0)
+        .toFixed(2);
 
       console.log("USD Total Exchanged into EUR " + USD_TOTAL * rates.EUR);
 
       res.json({
-        USD_TOTAL,
-        EUR_TOTAL,
-        result,
+        usdTotal: +USD_TOTAL,
+        eurTotal: +EUR_TOTAL,
+        portfolioItems: result,
       });
     } catch (e) {
+      console.log(e);
       res.status(401).json({
         status: "failed",
         message: e.toString(),

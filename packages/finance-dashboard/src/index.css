@@ -19,6 +19,8 @@ button {
 table {
   width: 100%;
   border-collapse: collapse;
+  position: relative;
+  text-align: left;
 }
 
 th,
@@ -26,6 +28,21 @@ td {
   padding: 8px;
 }
 
+th {
+  position: sticky;
+  top: -20px;
+  box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
+  background: white;
+}
+
 tr:nth-child(even) {
   background-color: #f2f2f2;
+}
+
+.InvestTotals {
+  display: flex;
+}
+
+.InvestTotals > .Tile {
+  max-width: 35vw;
 }

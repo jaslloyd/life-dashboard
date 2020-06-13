@@ -6,15 +6,19 @@ import "./index.css";
 type Currency = "EUR" | "USD";
 
 interface Portfolio {
-  id: string;
-  tickerSymbol: string;
-  name: string;
-  productType: string;
-  sharesHeld: number;
-  currentStockValue: number;
-  stockValueBreakEvenPrice: number;
-  totalPositionValue: number;
-  stockCurrency: Currency;
+  usdTotal: number;
+  eurTotal: number;
+  portfolioItems: {
+    id: string;
+    tickerSymbol: string;
+    name: string;
+    productType: string;
+    sharesHeld: number;
+    currentStockValue: number;
+    stockValueBreakEvenPrice: number;
+    totalPositionValue: number;
+    stockCurrency: Currency;
+  }[];
 }
 
 const FinanceApp: React.FC = () => {
@@ -38,7 +42,7 @@ const FinanceApp: React.FC = () => {
       if (res.ok) {
         const resultJSON = await res.json();
 
-        setApiResult(resultJSON.result);
+        setApiResult(resultJSON);
         setStatus("idle");
       } else {
         if (res.status === 401) {
@@ -72,7 +76,12 @@ const FinanceApp: React.FC = () => {
   return (
     <DashboardShell>
       <h1>Finance Application</h1>
-      {status === "idle" && <InvestmentTable portfolioData={apiResult} />}
+      {status === "idle" && (
+        <>
+          <InvestTotals totals={apiResult} />
+          <InvestmentTable portfolioData={apiResult} />
+        </>
+      )}
 
       {status === "error" && <h1>An unexpected error occurred...</h1>}
 
@@ -110,7 +119,7 @@ const Login: React.FC<{ onSubmit: (code: string) => void }> = ({
   );
 };
 
-const InvestmentTable: React.FC<{ portfolioData: Portfolio[] }> = ({
+const InvestmentTable: React.FC<{ portfolioData: Portfolio }> = ({
   portfolioData,
 }) => {
   return (
@@ -118,17 +127,17 @@ const InvestmentTable: React.FC<{ portfolioData: Portfolio[] }> = ({
       <table>
         <thead>
           <tr>
-            <td>Ticker</td>
-            <td>Name</td>
-            <td>Product Type</td>
-            <td># Shares Held</td>
-            <td>Current Stock Value</td>
-            <td>Break Event Point</td>
-            <td>Total Position Value</td>
+            <th>Ticker</th>
+            <th>Name</th>
+            <th>Product Type</th>
+            <th># Shares Held</th>
+            <th>Current Stock Value</th>
+            <th>Break Event Point</th>
+            <th>Total Position Value</th>
           </tr>
         </thead>
         <tbody>
-          {portfolioData.map((lineItem) => (
+          {portfolioData.portfolioItems.map((lineItem) => (
             <tr key={lineItem.id}>
               <td>{lineItem.tickerSymbol}</td>
               <td>{lineItem.name}</td>
@@ -147,4 +156,15 @@ const InvestmentTable: React.FC<{ portfolioData: Portfolio[] }> = ({
     </Tile>
   );
 };
+
+const InvestTotals: React.FC<{ totals: Portfolio }> = ({ totals }) => (
+  <div className="InvestTotals">
+    <Tile title="Euro Total">
+      <h1>€{totals.eurTotal}</h1>
+    </Tile>
+    <Tile title="Dollar Total">
+      <h1>${totals.usdTotal}</h1>
+    </Tile>
+  </div>
+);
 export default FinanceApp;
