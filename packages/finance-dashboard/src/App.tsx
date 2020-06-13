@@ -1,5 +1,7 @@
 import React from "react";
 import DashboardShell from "dashboardshell/DashboardShell";
+import Tile from "./Tile";
+import "./index.css";
 
 type Currency = "EUR" | "USD";
 
@@ -58,7 +60,6 @@ const FinanceApp: React.FC = () => {
       if (resp.ok) {
         const json = await resp.json();
         localStorage.setItem("SESSION_ID", json.id);
-        console.log(json);
         fetchData();
       } else {
         console.log("Response was not valid...");
@@ -91,15 +92,21 @@ const Login: React.FC<{ onSubmit: (code: string) => void }> = ({
     onSubmit(code);
   };
   return (
-    <form onSubmit={handleFormSubmit}>
-      <label htmlFor="code">Code</label>
-      <input
-        type="text"
-        id="code"
-        onChange={(e) => setCode(e.target.value)}
-        value={code}
-      />
-    </form>
+    <Tile title="Login">
+      <form onSubmit={handleFormSubmit}>
+        <label htmlFor="code" hidden>
+          Code
+        </label>
+        <input
+          type="password"
+          id="code"
+          onChange={(e) => setCode(e.target.value)}
+          value={code}
+          placeholder="Login Code"
+        />
+        <button type="submit">Login</button>
+      </form>
+    </Tile>
   );
 };
 
@@ -107,35 +114,37 @@ const InvestmentTable: React.FC<{ portfolioData: Portfolio[] }> = ({
   portfolioData,
 }) => {
   return (
-    <table>
-      <thead>
-        <tr>
-          <td>Ticker</td>
-          <td>Name</td>
-          <td>Product Type</td>
-          <td># Shares Held</td>
-          <td>Current Stock Value</td>
-          <td>Break Event Point</td>
-          <td>Total Position Value</td>
-        </tr>
-      </thead>
-      <tbody>
-        {portfolioData.map((lineItem) => (
-          <tr key={lineItem.id}>
-            <td>{lineItem.tickerSymbol}</td>
-            <td>{lineItem.name}</td>
-            <td>{lineItem.productType}</td>
-            <td>{lineItem.sharesHeld}</td>
-            <td>{lineItem.currentStockValue}</td>
-            <td>{lineItem.stockValueBreakEvenPrice}</td>
-            <td>
-              {lineItem.stockCurrency === "USD" ? "$" : "€"}
-              {lineItem.totalPositionValue}
-            </td>
+    <Tile title="Investment Portfolio">
+      <table>
+        <thead>
+          <tr>
+            <td>Ticker</td>
+            <td>Name</td>
+            <td>Product Type</td>
+            <td># Shares Held</td>
+            <td>Current Stock Value</td>
+            <td>Break Event Point</td>
+            <td>Total Position Value</td>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {portfolioData.map((lineItem) => (
+            <tr key={lineItem.id}>
+              <td>{lineItem.tickerSymbol}</td>
+              <td>{lineItem.name}</td>
+              <td>{lineItem.productType}</td>
+              <td>{lineItem.sharesHeld}</td>
+              <td>{lineItem.currentStockValue}</td>
+              <td>{lineItem.stockValueBreakEvenPrice}</td>
+              <td>
+                {lineItem.stockCurrency === "USD" ? "$" : "€"}
+                {lineItem.totalPositionValue}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </Tile>
   );
 };
 export default FinanceApp;
