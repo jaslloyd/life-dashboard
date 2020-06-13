@@ -1,6 +1,8 @@
 import React from "react";
-// import DashboardShell from "dashboardshell/DashboardShell";
+import DashboardShell from "dashboardshell/DashboardShell";
 import Tile from "./Tile";
+import Login from "./Login";
+import InvestTotals from "./InvestTotals";
 import "./index.css";
 
 type Currency = "EUR" | "USD";
@@ -74,7 +76,7 @@ const FinanceApp: React.FC = () => {
   };
 
   return (
-    <div>
+    <DashboardShell>
       <h1>Finance Application</h1>
       {status === "idle" && (
         <>
@@ -88,36 +90,7 @@ const FinanceApp: React.FC = () => {
       {status === "error" && <h1>An unexpected error occurred...</h1>}
 
       {status === "showLogin" && <Login onSubmit={handleLogin} />}
-    </div>
-  );
-};
-
-const Login: React.FC<{ onSubmit: (code: string) => void }> = ({
-  onSubmit,
-}) => {
-  const [code, setCode] = React.useState("");
-
-  const handleFormSubmit = async (e) => {
-    e.preventDefault();
-    console.log(e);
-    onSubmit(code);
-  };
-  return (
-    <Tile title="Login">
-      <form onSubmit={handleFormSubmit}>
-        <label htmlFor="code" hidden>
-          Code
-        </label>
-        <input
-          type="password"
-          id="code"
-          onChange={(e) => setCode(e.target.value)}
-          value={code}
-          placeholder="Login Code"
-        />
-        <button type="submit">Login</button>
-      </form>
-    </Tile>
+    </DashboardShell>
   );
 };
 
@@ -161,86 +134,4 @@ const InvestmentTable: React.FC<{ portfolioData: Portfolio }> = ({
   );
 };
 
-const InvestTotals: React.FC<{ totals: Portfolio }> = ({ totals }) => (
-  <div className="InvestTotals">
-    <Tile title="Total" className="overall-total">
-      <h5>
-        <span>€</span>
-        {totals.overallTotalInEuro}
-      </h5>
-    </Tile>
-  </div>
-);
-
-const ExternalTile: React.FC = () => {
-  const [apiResult, setApiResult] = React.useState(null);
-  const [status, setStatus] = React.useState("loading");
-
-  React.useEffect(() => {
-    fetchData();
-  }, []);
-
-  // TODO: Move this out to a util function
-  const fetchData = async () => {
-    try {
-      const res = await fetch(`http://localhost:3000/api/v1/portfolio`, {
-        credentials: "include",
-        headers: {
-          Authorization: localStorage.getItem("SESSION_ID"),
-        },
-      });
-
-      if (res.ok) {
-        const resultJSON = await res.json();
-
-        setApiResult(resultJSON);
-        setStatus("idle");
-      } else {
-        if (res.status === 401) {
-          console.log("Need to login again");
-          setStatus("showLogin");
-        }
-      }
-    } catch (e) {
-      console.error(e);
-      setStatus("error");
-    }
-  };
-
-  const handleLogin = async (code: string) => {
-    try {
-      setApiResult("loading");
-      const resp = await fetch(`http://localhost:3000/api/v1/login/${code}`);
-
-      if (resp.ok) {
-        const json = await resp.json();
-        localStorage.setItem("SESSION_ID", json.id);
-        fetchData();
-      } else {
-        console.log("Response was not valid...");
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  return (
-    <>
-      {status === "idle" && (
-        <>
-          <InvestTotals totals={apiResult} />
-        </>
-      )}
-
-      {status == "loading" && <div className="Tile skeleton"></div>}
-
-      {status === "error" && <h1>An unexpected error occurred...</h1>}
-
-      {status === "showLogin" && <Login onSubmit={handleLogin} />}
-    </>
-  );
-};
-
-export { FinanceApp };
-
-export default ExternalTile;
+export default FinanceApp;
