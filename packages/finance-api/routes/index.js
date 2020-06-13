@@ -105,8 +105,6 @@ router.get("/portfolio", async (req, res) => {
       const overallTotalInEuro = (EUR_TOTAL + USD_TOTAL * rates.EUR).toFixed(0);
 
       res.json({
-        usdTotal: USD_TOTAL,
-        eurTotal: EUR_TOTAL,
         overallTotalInEuro,
         portfolioItems: result,
       });

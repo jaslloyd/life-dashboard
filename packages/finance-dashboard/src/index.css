@@ -50,26 +50,22 @@ tr:nth-child(even) {
   margin-bottom: 20px;
 }
 
-.InvestTotals > .Tile h1 {
-  font-size: 40px;
-  margin: 10px 0;
+.InvestTotals > .Tile .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .InvestTotals > .Tile h4 {
   color: white;
 }
 
+.InvestTotals > .Tile h5 {
+  font-size: 40px;
+  margin: 10px 0;
+}
+
 .InvestTotals > .Tile.overall-total {
   background-color: #78c350;
-  color: white;
-}
-
-.InvestTotals > .Tile.euro-total {
-  background-color: #45bbe0;
-  color: white;
-}
-
-.InvestTotals > .Tile.dollar-total {
-  background-color: #f06292;
   color: white;
 }
