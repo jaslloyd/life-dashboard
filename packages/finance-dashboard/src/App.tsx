@@ -8,6 +8,7 @@ type Currency = "EUR" | "USD";
 interface Portfolio {
   usdTotal: number;
   eurTotal: number;
+  overallTotalInEuro: number;
   portfolioItems: {
     id: string;
     tickerSymbol: string;
@@ -159,10 +160,13 @@ const InvestmentTable: React.FC<{ portfolioData: Portfolio }> = ({
 
 const InvestTotals: React.FC<{ totals: Portfolio }> = ({ totals }) => (
   <div className="InvestTotals">
-    <Tile title="Euro Total">
+    <Tile title="Total" className="overall-total">
+      <h1>€{totals.overallTotalInEuro}</h1>
+    </Tile>
+    <Tile title="Euro Total" className="euro-total">
       <h1>€{totals.eurTotal}</h1>
     </Tile>
-    <Tile title="Dollar Total">
+    <Tile title="Dollar Total" className="dollar-total">
       <h1>${totals.usdTotal}</h1>
     </Tile>
   </div>

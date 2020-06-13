@@ -4,7 +4,8 @@
   max-width: 100%;
   max-height: 600px;
   overflow: auto;
-  border: 1px solid black;
+  border: 1px solid #faf9f9;
+  border-radius: 0.25rem;
 }
 
 .Tile h4 {
