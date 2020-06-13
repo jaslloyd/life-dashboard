@@ -10,4 +10,5 @@ const DashboardShell: React.FC = ({ children }) => (
     <main>{children ? children : <h1>Hello from Dashboard shell</h1>}</main>
   </>
 );
+
 export default DashboardShell;

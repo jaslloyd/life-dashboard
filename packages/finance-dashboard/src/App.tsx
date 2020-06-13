@@ -1,5 +1,5 @@
 import React from "react";
-import DashboardShell from "dashboardshell/DashboardShell";
+// import DashboardShell from "dashboardshell/DashboardShell";
 import Tile from "./Tile";
 import "./index.css";
 
@@ -74,20 +74,21 @@ const FinanceApp: React.FC = () => {
   };
 
   return (
-    <DashboardShell>
+    <div>
       <h1>Finance Application</h1>
-      <div className="Tile skeleton"></div>
       {status === "idle" && (
-        <div className="FinanceApp2">
+        <>
           <InvestTotals totals={apiResult} />
           <InvestmentTable portfolioData={apiResult} />
-        </div>
+        </>
       )}
+
+      {status == "loading" && <div className="Tile skeleton"></div>}
 
       {status === "error" && <h1>An unexpected error occurred...</h1>}
 
       {status === "showLogin" && <Login onSubmit={handleLogin} />}
-    </DashboardShell>
+    </div>
   );
 };
 
@@ -138,20 +139,22 @@ const InvestmentTable: React.FC<{ portfolioData: Portfolio }> = ({
           </tr>
         </thead>
         <tbody>
-          {portfolioData.portfolioItems.map((lineItem) => (
-            <tr key={lineItem.id}>
-              <td>{lineItem.tickerSymbol}</td>
-              <td>{lineItem.name}</td>
-              <td>{lineItem.productType}</td>
-              <td>{lineItem.sharesHeld}</td>
-              <td>{lineItem.currentStockValue}</td>
-              <td>{lineItem.stockValueBreakEvenPrice}</td>
-              <td>
-                {lineItem.stockCurrency === "USD" ? "$" : "€"}
-                {lineItem.totalPositionValue}
-              </td>
-            </tr>
-          ))}
+          {portfolioData
+            ? portfolioData.portfolioItems.map((lineItem) => (
+                <tr key={lineItem.id}>
+                  <td>{lineItem.tickerSymbol}</td>
+                  <td>{lineItem.name}</td>
+                  <td>{lineItem.productType}</td>
+                  <td>{lineItem.sharesHeld}</td>
+                  <td>{lineItem.currentStockValue}</td>
+                  <td>{lineItem.stockValueBreakEvenPrice}</td>
+                  <td>
+                    {lineItem.stockCurrency === "USD" ? "$" : "€"}
+                    {lineItem.totalPositionValue}
+                  </td>
+                </tr>
+              ))
+            : null}
         </tbody>
       </table>
     </Tile>
@@ -161,15 +164,14 @@ const InvestmentTable: React.FC<{ portfolioData: Portfolio }> = ({
 const InvestTotals: React.FC<{ totals: Portfolio }> = ({ totals }) => (
   <div className="InvestTotals">
     <Tile title="Total" className="overall-total">
-      <div className="container">
-        <h5>
-          <span>€</span>
-          {totals.overallTotalInEuro}
-        </h5>
-      </div>
+      <h5>
+        <span>€</span>
+        {totals.overallTotalInEuro}
+      </h5>
     </Tile>
   </div>
 );
+
 const ExternalTile: React.FC = () => {
   const [apiResult, setApiResult] = React.useState(null);
   const [status, setStatus] = React.useState("loading");
@@ -229,10 +231,16 @@ const ExternalTile: React.FC = () => {
           <InvestTotals totals={apiResult} />
         </>
       )}
+
+      {status == "loading" && <div className="Tile skeleton"></div>}
+
       {status === "error" && <h1>An unexpected error occurred...</h1>}
 
       {status === "showLogin" && <Login onSubmit={handleLogin} />}
     </>
   );
 };
-export default FinanceApp;
+
+export { FinanceApp };
+
+export default ExternalTile;

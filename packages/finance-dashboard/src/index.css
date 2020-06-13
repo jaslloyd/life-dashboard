@@ -77,20 +77,12 @@ tr:nth-child(even) {
 }
 
 .InvestTotals {
-  display: grid;
-  grid-template-columns: 200px 200px 200px;
-  gap: 20px;
+  max-width: 200px;
 }
 
 .InvestTotals > .Tile {
   max-width: 35vw;
   margin-bottom: 20px;
-}
-
-.InvestTotals > .Tile .container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
 }
 
 .InvestTotals > .Tile h4 {

@@ -76,7 +76,9 @@ module.exports = (env) => {
           DashboardShell: "./src/App",
         },
         //TODO: Fill in below later
-        remotes: {},
+        remotes: {
+          finance: "finance",
+        },
         shared: ["react", "react-dom"],
       }),
       // The HtmlWebpackPlugin simplifies creation of HTML files to serve your webpack bundles. This is especially useful for webpack bundles that include a hash in the filename which changes every compilation
