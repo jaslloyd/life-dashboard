@@ -1,5 +1,6 @@
 import React from "react";
 import Tile from "./Tile";
+import "./Login.css";
 
 const Login: React.FC<{ onSubmit: (code: string) => void }> = ({
   onSubmit,

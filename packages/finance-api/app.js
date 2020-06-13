@@ -13,7 +13,16 @@ if (process.env.NODE_ENV !== "production") {
 const app = express();
 app.use(
   cors({
-    origin: "http://localhost:3002",
+    origin: (origin, callback) => {
+      if (
+        ["http://localhost:3002", "http://localhost:3001"].includes(origin) !==
+        -1
+      ) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   })
 );
