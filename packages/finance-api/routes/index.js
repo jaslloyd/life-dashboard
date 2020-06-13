@@ -106,10 +106,9 @@ router.get("/portfolio", async (req, res) => {
         USD_TOTAL,
         EUR_TOTAL,
         result,
-        portfolio,
       });
     } catch (e) {
-      res.status(500).json({
+      res.status(401).json({
         status: "failed",
         message: e.toString(),
       });
