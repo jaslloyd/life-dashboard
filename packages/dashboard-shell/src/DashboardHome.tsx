@@ -9,7 +9,7 @@ const DashboardHome: React.FC = () => (
       <Navbar />
     </aside>
     <main>
-      <FinanceTile />
+      <FinanceTile summary />
     </main>
   </>
 );

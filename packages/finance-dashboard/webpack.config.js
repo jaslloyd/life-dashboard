@@ -73,7 +73,7 @@ module.exports = (env) => {
         library: { type: "var", name: "finance" },
         filename: "remoteEntry.js",
         exposes: {
-          FinanceTile: "./src/FinanceTile.tsx",
+          FinanceTile: "./src/FinanceApp.tsx",
         },
         //TODO: Fill in below later
         remotes: {
