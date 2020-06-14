@@ -1,5 +1,5 @@
 import React from "react";
-import Tile from "./Tile";
+import { Tile, SkeltonTile } from "./Tile";
 import Login from "./Login";
 import InvestTotals from "./InvestTotals";
 
@@ -82,7 +82,7 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
         </>
       )}
 
-      {status == "loading" && <div className="Tile skeleton"></div>}
+      {status == "loading" && <SkeltonTile />}
 
       {status === "error" && <h1>An unexpected error occurred...</h1>}
 

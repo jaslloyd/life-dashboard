@@ -1,5 +1,5 @@
 import React from "react";
-import Tile from "./Tile";
+import { Tile } from "./Tile";
 import "./Login.css";
 
 const Login: React.FC<{ onSubmit: (code: string) => void }> = ({
@@ -13,7 +13,7 @@ const Login: React.FC<{ onSubmit: (code: string) => void }> = ({
     onSubmit(code);
   };
   return (
-    <Tile title="Login">
+    <Tile title="Please Login">
       <form onSubmit={handleFormSubmit}>
         <label htmlFor="code" hidden>
           Code

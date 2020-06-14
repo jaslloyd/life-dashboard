@@ -12,4 +12,6 @@ const Tile: React.FC<{ title: string; className?: string }> = ({
   </div>
 );
 
-export default Tile;
+const SkeltonTile: React.FC = () => <div className="Skeleton" />;
+
+export { Tile, SkeltonTile };
