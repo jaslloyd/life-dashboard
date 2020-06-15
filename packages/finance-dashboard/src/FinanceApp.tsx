@@ -59,7 +59,15 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
   const handleLogin = async (code: string) => {
     try {
       setApiResult("loading");
-      const resp = await fetch(`http://localhost:3000/api/v1/login/${code}`);
+      const resp = await fetch(`http://localhost:3000/api/v1/login`, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+        body: JSON.stringify({
+          code,
+        }),
+      });
 
       if (resp.ok) {
         const json = await resp.json();

@@ -4,8 +4,16 @@ const DeGiro = require("degiro");
 const fetch = require("node-fetch");
 
 // TODO: Use POST request
-router.get("/login/:code", async (req, res) => {
-  const code = req.params.code;
+router.post("/login", async (req, res) => {
+  console.log(req.body);
+  const code = req.body.code;
+  if (!code) {
+    return res.status(401).json({
+      status: "failed",
+      message: "Login Code is Required",
+    });
+  }
+
   const degiro = DeGiro.create({
     oneTimePassword: code,
     debug: true,
