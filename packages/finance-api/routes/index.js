@@ -92,17 +92,33 @@ router.get("/portfolio", async (req, res) => {
 
       const totalsByCurrencies = result.reduce((acc, curr) => {
         if (!acc[curr.stockCurrency]) {
-          acc[curr.stockCurrency] = curr.totalPositionValue;
+          acc[curr.stockCurrency] = {
+            currTotal: curr.totalPositionValue,
+            breakEvenTotal: curr.totalBreakEvenPrice,
+          };
         } else {
-          acc[curr.stockCurrency] += curr.totalPositionValue;
+          acc[curr.stockCurrency] = {
+            currTotal: (acc[curr.stockCurrency].currTotal +=
+              curr.totalPositionValue),
+            breakEvenTotal: (acc[curr.stockCurrency].breakEvenTotal +=
+              curr.totalBreakEvenPrice),
+          };
         }
         return acc;
       }, {});
 
+      console.log(totalsByCurrencies);
+
       const overallTotalInEuro = (
-        totalsByCurrencies["EUR"] +
-        totalsByCurrencies["USD"] * rates.EUR
+        totalsByCurrencies["EUR"].currTotal +
+        totalsByCurrencies["USD"].currTotal * rates.EUR
       ).toFixed(0);
+
+      const overBETotalInEuro = (
+        totalsByCurrencies["EUR"].breakEvenTotal +
+        totalsByCurrencies["USD"].breakEvenTotal * rates.EUR
+      ).toFixed(0);
+      console.log(overallTotalInEuro - overBETotalInEuro);
 
       res.json({
         overallTotalInEuro,
