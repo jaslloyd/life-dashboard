@@ -90,18 +90,19 @@ router.get("/portfolio", async (req, res) => {
         await fetch("https://api.exchangeratesapi.io/latest?base=USD")
       ).json();
 
-      //TODO: Convert this USD total to Euro
-      // Add the both above will only give me an approx value because degiro does crap tonnes of stuff around calculating the total portfolio value but approx is good enough
-      const USD_TOTAL = +result
-        .filter((result) => result.stockCurrency === "USD")
-        .reduce((acc, curr) => acc + curr.totalPositionValue, 0)
-        .toFixed(0);
-      const EUR_TOTAL = +result
-        .filter((result) => result.stockCurrency === "EUR")
-        .reduce((acc, curr) => acc + curr.totalPositionValue, 0)
-        .toFixed(0);
+      const totalsByCurrencies = result.reduce((acc, curr) => {
+        if (!acc[curr.stockCurrency]) {
+          acc[curr.stockCurrency] = curr.totalPositionValue;
+        } else {
+          acc[curr.stockCurrency] += curr.totalPositionValue;
+        }
+        return acc;
+      }, {});
 
-      const overallTotalInEuro = (EUR_TOTAL + USD_TOTAL * rates.EUR).toFixed(0);
+      const overallTotalInEuro = (
+        totalsByCurrencies["EUR"] +
+        totalsByCurrencies["USD"] * rates.EUR
+      ).toFixed(0);
 
       res.json({
         overallTotalInEuro,
