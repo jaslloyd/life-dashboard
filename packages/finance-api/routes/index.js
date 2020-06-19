@@ -60,35 +60,28 @@ router.get("/portfolio", async (req, res) => {
       const productIds = portfolio.portfolio.map((p) => p.id);
       const productNames = await degiro.getProductsByIds(productIds);
 
-      const findSpecificValue = (personalValues, valueToFind) =>
-        personalValues.find((values) => values.name === valueToFind).value;
+      const takeValueFromPortfolio = (productInfo) => (valueToFind) =>
+        productInfo.find((values) => values.name === valueToFind).value;
 
       const result = Object.keys(productNames.data).map((pid) => {
         const personalProductInfo = portfolio.portfolio.find(
           (p) => p.id === pid
         ).value;
 
-        // TODO: These give me very rough estimates, it doesn't account for currency or other factors, will do later
+        const findValue = takeValueFromPortfolio(personalProductInfo);
 
         return {
           id: pid,
           tickerSymbol: productNames.data[pid].symbol,
           name: productNames.data[pid].name,
           productType: productNames.data[pid].productType,
-          sharesHeld: findSpecificValue(personalProductInfo, "size"),
-          currentStockValue: findSpecificValue(personalProductInfo, "price"),
-          stockValueBreakEvenPrice: +findSpecificValue(
-            personalProductInfo,
-            "breakEvenPrice"
-          ).toFixed(2),
-          totalPositionValue: +findSpecificValue(
-            personalProductInfo,
-            "value"
-          ).toFixed(2),
+          sharesHeld: findValue("size"),
+          currentStockValue: findValue("price"),
+          stockValueBreakEvenPrice: +findValue("breakEvenPrice").toFixed(2),
+          totalPositionValue: +findValue("value").toFixed(2),
           stockCurrency: productNames.data[pid].currency,
           totalBreakEvenPrice: +(
-            findSpecificValue(personalProductInfo, "breakEvenPrice") *
-            findSpecificValue(personalProductInfo, "size")
+            findValue("breakEvenPrice") * findValue("size")
           ).toFixed(2),
         };
       });
