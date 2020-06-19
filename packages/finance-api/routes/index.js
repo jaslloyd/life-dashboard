@@ -60,7 +60,6 @@ router.get("/portfolio", async (req, res) => {
       const productIds = portfolio.portfolio.map((p) => p.id);
       const productNames = await degiro.getProductsByIds(productIds);
 
-      let totalBreakEvenPrice = 0;
       const findSpecificValue = (personalValues, valueToFind) =>
         personalValues.find((values) => values.name === valueToFind).value;
 
