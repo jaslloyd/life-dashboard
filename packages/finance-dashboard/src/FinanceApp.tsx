@@ -19,6 +19,7 @@ interface Portfolio {
     stockValueBreakEvenPrice: number;
     totalPositionValue: number;
     stockCurrency: Currency;
+    totalBreakEvenPrice: number;
   }[];
 }
 
@@ -42,6 +43,7 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
       if (res.ok) {
         const resultJSON = await res.json();
 
+        console.log(resultJSON);
         setApiResult(resultJSON);
         setStatus("idle");
       } else {
@@ -128,7 +130,10 @@ const InvestmentTable: React.FC<{ portfolioData: Portfolio }> = ({
                   <td>{lineItem.stockValueBreakEvenPrice}</td>
                   <td>
                     {lineItem.stockCurrency === "USD" ? "$" : "€"}
-                    {lineItem.totalPositionValue}
+                    {lineItem.totalPositionValue}{" "}
+                    {lineItem.totalBreakEvenPrice > lineItem.totalPositionValue
+                      ? "-"
+                      : "+"}
                   </td>
                 </tr>
               ))
