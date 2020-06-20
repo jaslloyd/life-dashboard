@@ -1,10 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const DeGiro = require("degiro");
-const fetch = require("node-fetch");
 const { login, getPortfolio } = require("../lib/degiro");
 
-// TODO: Use POST request
 router.post("/login", async (req, res) => {
   const code = req.body.code;
   if (!code) {
@@ -31,9 +28,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// TODO: Use Cookies to get session id later
 router.get("/portfolio", async (req, res) => {
-  console.log(req.headers);
   if (!req.headers.authorization) {
     res.status(401).json({
       status: "failed",
