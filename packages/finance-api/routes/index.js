@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const DeGiro = require("degiro");
 const fetch = require("node-fetch");
+const { login } = require("../lib/degiro");
 
 // TODO: Use POST request
 router.post("/login", async (req, res) => {
@@ -14,23 +15,14 @@ router.post("/login", async (req, res) => {
     });
   }
 
-  const degiro = DeGiro.create({
-    oneTimePassword: code,
-    debug: true,
-  });
   try {
-    await degiro.login();
+    const { id, accountId } = await login(code);
 
-    // TODO: Find out age of degiro cookies
-    // res.cookie("SESSION_ID", degiro.session.id, {
-    //   maxAge: 90000000,
-    //   httpOnly: true,
-    // });
     res.send({
       status: "success",
       message: "Login Successful",
-      id: degiro.session.id,
-      accountId: degiro.session.account,
+      id,
+      accountId,
     });
   } catch (e) {
     res.status(401).json({
