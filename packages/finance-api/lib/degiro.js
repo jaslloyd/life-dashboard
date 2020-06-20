@@ -7,16 +7,12 @@ const login = async (code) => {
     debug: true,
   });
 
-  try {
-    await degiro.login();
+  await degiro.login();
 
-    resolve({
-      id: degiro.session.id,
-      accountId: degiro.session.account,
-    });
-  } catch (e) {
-    rej(e);
-  }
+  return {
+    id: degiro.session.id,
+    accountId: degiro.session.account,
+  };
 };
 
 const getPortfolio = async (sessionId) => {
@@ -27,28 +23,31 @@ const getPortfolio = async (sessionId) => {
   await degiro.updateConfig();
   const portfolio = await degiro.getPortfolio();
 
-  const productIds = portfolio.portfolio.map((p) => p.id);
-  const productNames = await degiro.getProductsByIds(productIds);
+  const { data: productData } = await degiro.getProductsByIds(
+    portfolio.portfolio.map((p) => p.id)
+  );
 
   const takeValueFromPortfolio = (productInfo) => (valueToFind) =>
     productInfo.find((values) => values.name === valueToFind).value;
 
-  const result = Object.keys(productNames.data).map((pid) => {
+  const result = Object.keys(productData).map((pid) => {
     const personalProductInfo = portfolio.portfolio.find((p) => p.id === pid)
       .value;
 
     const findValue = takeValueFromPortfolio(personalProductInfo);
 
+    const product = productData[pid];
+
     return {
       id: pid,
-      tickerSymbol: productNames.data[pid].symbol,
-      name: productNames.data[pid].name,
-      productType: productNames.data[pid].productType,
+      tickerSymbol: product.symbol,
+      name: product.name,
+      productType: product.productType,
       sharesHeld: findValue("size"),
       currentStockValue: findValue("price"),
       stockValueBreakEvenPrice: +findValue("breakEvenPrice").toFixed(2),
       totalPositionValue: +findValue("value").toFixed(2),
-      stockCurrency: productNames.data[pid].currency,
+      stockCurrency: product.currency,
       totalBreakEvenPrice: +(
         findValue("breakEvenPrice") * findValue("size")
       ).toFixed(2),
@@ -76,19 +75,19 @@ const getPortfolio = async (sessionId) => {
 
   console.log(totalsByCurrencies);
 
-  const overallTotalInEuro = (
+  const overallTotalInEuro = +(
     totalsByCurrencies["EUR"].currTotal +
     totalsByCurrencies["USD"].currTotal * rates.EUR
   ).toFixed(0);
 
-  const overBETotalInEuro = (
+  const overBETotalInEuro = +(
     totalsByCurrencies["EUR"].breakEvenTotal +
     totalsByCurrencies["USD"].breakEvenTotal * rates.EUR
   ).toFixed(0);
-  console.log(overallTotalInEuro - overBETotalInEuro);
 
   return {
     overallTotalInEuro,
+    overBETotalInEuro,
     portfolioItems: result,
     portfolio,
   };

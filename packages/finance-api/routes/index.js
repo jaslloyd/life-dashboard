@@ -43,6 +43,7 @@ router.get("/portfolio", async (req, res) => {
     try {
       const {
         overallTotalInEuro,
+        overBETotalInEuro,
         portfolioItems,
         portfolio,
       } = await getPortfolio(req.headers.authorization);
@@ -50,6 +51,7 @@ router.get("/portfolio", async (req, res) => {
       res.json({
         status: API_STATUSES.SUCCESS,
         overallTotalInEuro,
+        overBETotalInEuro,
         portfolioItems,
         portfolio,
       });
