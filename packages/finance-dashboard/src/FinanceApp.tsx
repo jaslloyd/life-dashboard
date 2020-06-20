@@ -9,18 +9,20 @@ interface Portfolio {
   usdTotal: number;
   eurTotal: number;
   overallTotalInEuro: number;
-  portfolioItems: {
-    id: string;
-    tickerSymbol: string;
-    name: string;
-    productType: string;
-    sharesHeld: number;
-    currentStockValue: number;
-    stockValueBreakEvenPrice: number;
-    totalPositionValue: number;
-    stockCurrency: Currency;
-    totalBreakEvenPrice: number;
-  }[];
+  portfolioItems: PortfolioItem[];
+}
+
+interface PortfolioItem {
+  id: string;
+  tickerSymbol: string;
+  name: string;
+  productType: string;
+  sharesHeld: number;
+  currentStockValue: number;
+  stockValueBreakEvenPrice: number;
+  totalPositionValue: number;
+  stockCurrency: Currency;
+  totalBreakEvenPrice: number;
 }
 
 const formatMoney = (value: number) => new Intl.NumberFormat().format(value);
@@ -28,7 +30,9 @@ const formatMoney = (value: number) => new Intl.NumberFormat().format(value);
 const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
   const [apiResult, setApiResult] = React.useState(null);
   const [status, setStatus] = React.useState("loading");
-  const [stockToPurchase, setStockToPurchase] = React.useState([]);
+  const [stockToPurchase, setStockToPurchase] = React.useState<PortfolioItem[]>(
+    []
+  );
 
   React.useEffect(() => {
     fetchData();
@@ -137,7 +141,7 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
 
 const InvestmentTable: React.FC<{
   portfolioData: Portfolio;
-  onPurchaseClick: (item: any) => void;
+  onPurchaseClick: (item: PortfolioItem) => void;
 }> = ({ portfolioData, onPurchaseClick }) => {
   return (
     <Tile title="Investment Portfolio">
@@ -182,7 +186,7 @@ const InvestmentTable: React.FC<{
 };
 
 const BuyTable: React.FC<{
-  portfolioData: any;
+  portfolioData: PortfolioItem[];
   onDeleteClick: (id: string) => void;
 }> = ({ portfolioData, onDeleteClick }) => (
   <Tile title="Buy Table">
