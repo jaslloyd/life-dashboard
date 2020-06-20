@@ -12,6 +12,11 @@ const Tile: React.FC<{ title: string; className?: string }> = ({
   </div>
 );
 
-const SkeltonTile: React.FC = () => <div className="Tile Skeleton" />;
+const SkeltonTile: React.FC = () => (
+  <div className="summary-panels">
+    <div className="Tile Skeleton" />
+    <div className="Tile Skeleton" />
+  </div>
+);
 
 export { Tile, SkeltonTile };
