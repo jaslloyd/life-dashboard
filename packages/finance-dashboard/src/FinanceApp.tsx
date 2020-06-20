@@ -23,6 +23,8 @@ interface Portfolio {
   }[];
 }
 
+const formatMoney = (value: number) => new Intl.NumberFormat().format(value);
+
 const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
   const [apiResult, setApiResult] = React.useState(null);
   const [status, setStatus] = React.useState("loading");
@@ -101,10 +103,12 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
       {status === "idle" && (
         <>
           <div className="summary-panels">
-            <InvestTotals value={apiResult.overallTotalInEuro} />
+            <InvestTotals value={formatMoney(apiResult.overallTotalInEuro)} />
             <InvestTotals
               title="Total + / -"
-              value={apiResult.overallTotalInEuro - apiResult.overBETotalInEuro}
+              value={formatMoney(
+                apiResult.overallTotalInEuro - apiResult.overBETotalInEuro
+              )}
             />
           </div>
           {!summary && (
@@ -161,7 +165,7 @@ const InvestmentTable: React.FC<{
               <td>{lineItem.stockValueBreakEvenPrice}</td>
               <td>
                 {lineItem.stockCurrency === "USD" ? "$" : "€"}
-                {lineItem.totalPositionValue}{" "}
+                {lineItem.totalPositionValue}
                 {lineItem.totalBreakEvenPrice > lineItem.totalPositionValue
                   ? "-"
                   : "+"}

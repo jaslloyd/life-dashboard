@@ -2,7 +2,7 @@ import React from "react";
 import { Tile } from "./Tile";
 import "./InvestTotals.css";
 
-const InvestTotals: React.FC<{ title?: string; value: number }> = ({
+const InvestTotals: React.FC<{ title?: string; value: string }> = ({
   title = "Total",
   value,
 }) => (
