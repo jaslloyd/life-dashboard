@@ -24,3 +24,9 @@ th {
 tr:nth-child(even) {
   background-color: #f2f2f2;
 }
+
+.summary-panels {
+  display: grid;
+  grid-template-columns: 200px 200px;
+  gap: 20px;
+}

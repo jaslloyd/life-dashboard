@@ -87,7 +87,13 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
     <>
       {status === "idle" && (
         <>
-          <InvestTotals totals={apiResult} />
+          <div className="summary-panels">
+            <InvestTotals value={apiResult.overallTotalInEuro} />
+            <InvestTotals
+              title="Total +/-"
+              value={apiResult.overallTotalInEuro - apiResult.overBETotalInEuro}
+            />
+          </div>
           {!summary && <InvestmentTable portfolioData={apiResult} />}
         </>
       )}
