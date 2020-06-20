@@ -26,6 +26,7 @@ interface Portfolio {
 const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
   const [apiResult, setApiResult] = React.useState(null);
   const [status, setStatus] = React.useState("loading");
+  const [stockToPurchase, setStockToPurchase] = React.useState([]);
 
   React.useEffect(() => {
     fetchData();
@@ -83,6 +84,18 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
     }
   };
 
+  const handlePurchaseClick = (line) => {
+    if (!stockToPurchase.find((stock) => stock.id === line.id)) {
+      setStockToPurchase([...stockToPurchase, line]);
+    }
+  };
+
+  const handleDeleteClick = (id: string) => {
+    const newStocks = stockToPurchase.filter((stock) => stock.id !== id);
+
+    setStockToPurchase(newStocks);
+  };
+
   return (
     <>
       {status === "idle" && (
@@ -90,11 +103,22 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
           <div className="summary-panels">
             <InvestTotals value={apiResult.overallTotalInEuro} />
             <InvestTotals
-              title="Total +/-"
+              title="Total + / -"
               value={apiResult.overallTotalInEuro - apiResult.overBETotalInEuro}
             />
           </div>
-          {!summary && <InvestmentTable portfolioData={apiResult} />}
+          {!summary && (
+            <>
+              <InvestmentTable
+                portfolioData={apiResult}
+                onPurchaseClick={handlePurchaseClick}
+              />
+              <BuyTable
+                portfolioData={stockToPurchase}
+                onDeleteClick={handleDeleteClick}
+              />
+            </>
+          )}
         </>
       )}
 
@@ -107,9 +131,10 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
   );
 };
 
-const InvestmentTable: React.FC<{ portfolioData: Portfolio }> = ({
-  portfolioData,
-}) => {
+const InvestmentTable: React.FC<{
+  portfolioData: Portfolio;
+  onPurchaseClick: (item: any) => void;
+}> = ({ portfolioData, onPurchaseClick }) => {
   return (
     <Tile title="Investment Portfolio">
       <table>
@@ -122,32 +147,66 @@ const InvestmentTable: React.FC<{ portfolioData: Portfolio }> = ({
             <th>Current Stock Value</th>
             <th>Break Event Point</th>
             <th>Total Position Value</th>
+            <th>Purchase?</th>
           </tr>
         </thead>
         <tbody>
-          {portfolioData
-            ? portfolioData.portfolioItems.map((lineItem) => (
-                <tr key={lineItem.id}>
-                  <td>{lineItem.tickerSymbol}</td>
-                  <td>{lineItem.name}</td>
-                  <td>{lineItem.productType}</td>
-                  <td>{lineItem.sharesHeld}</td>
-                  <td>{lineItem.currentStockValue}</td>
-                  <td>{lineItem.stockValueBreakEvenPrice}</td>
-                  <td>
-                    {lineItem.stockCurrency === "USD" ? "$" : "€"}
-                    {lineItem.totalPositionValue}{" "}
-                    {lineItem.totalBreakEvenPrice > lineItem.totalPositionValue
-                      ? "-"
-                      : "+"}
-                  </td>
-                </tr>
-              ))
-            : null}
+          {portfolioData.portfolioItems.map((lineItem) => (
+            <tr key={lineItem.id}>
+              <td>{lineItem.tickerSymbol}</td>
+              <td>{lineItem.name}</td>
+              <td>{lineItem.productType}</td>
+              <td>{lineItem.sharesHeld}</td>
+              <td>{lineItem.currentStockValue}</td>
+              <td>{lineItem.stockValueBreakEvenPrice}</td>
+              <td>
+                {lineItem.stockCurrency === "USD" ? "$" : "€"}
+                {lineItem.totalPositionValue}{" "}
+                {lineItem.totalBreakEvenPrice > lineItem.totalPositionValue
+                  ? "-"
+                  : "+"}
+              </td>
+              <td>
+                <button onClick={(_) => onPurchaseClick(lineItem)}>+</button>
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </Tile>
   );
 };
+
+const BuyTable: React.FC<{
+  portfolioData: any;
+  onDeleteClick: (id: string) => void;
+}> = ({ portfolioData, onDeleteClick }) => (
+  <Tile title="Buy Table">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Price per Share</th>
+          <th># of Shares</th>
+          <th>Total</th>
+          <th>Delete</th>
+        </tr>
+      </thead>
+      <tbody>
+        {portfolioData.map((lineItem) => (
+          <tr key={lineItem.id}>
+            <td>{lineItem.name}</td>
+            <td>{lineItem.currentStockValue}</td>
+            <td>TBA</td>
+            <td>TBA</td>
+            <td>
+              <button onClick={(_) => onDeleteClick(lineItem.id)}>X</button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </Tile>
+);
 
 export default FinanceApp;
