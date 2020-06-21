@@ -50,7 +50,6 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
       if (res.ok) {
         const resultJSON = await res.json();
 
-        console.log(resultJSON);
         setApiResult(resultJSON);
         setStatus("idle");
       } else {
@@ -188,33 +187,66 @@ const InvestmentTable: React.FC<{
 const BuyTable: React.FC<{
   portfolioData: PortfolioItem[];
   onDeleteClick: (id: string) => void;
-}> = ({ portfolioData, onDeleteClick }) => (
-  <Tile title="Buy Table">
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Price per Share</th>
-          <th># of Shares</th>
-          <th>Total</th>
-          <th>Delete</th>
-        </tr>
-      </thead>
-      <tbody>
-        {portfolioData.map((lineItem) => (
-          <tr key={lineItem.id}>
-            <td>{lineItem.name}</td>
-            <td>{lineItem.currentStockValue}</td>
-            <td>TBA</td>
-            <td>TBA</td>
-            <td>
-              <button onClick={(_) => onDeleteClick(lineItem.id)}>X</button>
-            </td>
+}> = ({ portfolioData, onDeleteClick }) => {
+  const [availableFunds, setAvailableFunds] = React.useState(1700);
+  return (
+    <Tile title="Buy Table">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Price per Share</th>
+            <th># of Shares</th>
+            <th>Total</th>
+            <th>Delete</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
-  </Tile>
-);
+        </thead>
+        <tbody>
+          {portfolioData.map((lineItem) => (
+            <BuyItemRow
+              key={lineItem.id}
+              item={lineItem}
+              availableFunds={availableFunds}
+              onDeleteClick={onDeleteClick}
+            />
+          ))}
+        </tbody>
+      </table>
+    </Tile>
+  );
+};
+
+const BuyItemRow: React.FC<{
+  item: PortfolioItem;
+  availableFunds: number;
+  onDeleteClick: (id: string) => void;
+}> = ({ item, onDeleteClick }) => {
+  const [totalStockToBuy, setTotalStockToBuy] = React.useState(0);
+  return (
+    <tr>
+      <td>{item.name}</td>
+      <td>{item.currentStockValue}</td>
+      <td>{totalStockToBuy}</td>
+      <td>
+        <button
+          className="counter"
+          onClick={(_) => setTotalStockToBuy(totalStockToBuy - 1)}
+        >
+          -
+        </button>
+        {totalStockToBuy * item.currentStockValue}
+        <button
+          className="counter"
+          onClick={(_) => setTotalStockToBuy(totalStockToBuy + 1)}
+        >
+          +
+        </button>
+      </td>
+      <td>
+        <button onClick={(_) => onDeleteClick(item.id)}>X</button>
+      </td>
+    </tr>
+  );
+};
 
 export default FinanceApp;

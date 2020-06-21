@@ -30,3 +30,7 @@ tr:nth-child(even) {
   grid-template-columns: 200px 200px;
   gap: 20px;
 }
+
+.counter {
+  background-color: transparent;
+}
