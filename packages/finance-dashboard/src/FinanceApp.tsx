@@ -120,10 +120,12 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
                 portfolioData={apiResult}
                 onPurchaseClick={handlePurchaseClick}
               />
-              <BuyTable
-                portfolioData={stockToPurchase}
-                onDeleteClick={handleDeleteClick}
-              />
+              {stockToPurchase.length && (
+                <BuyTable
+                  portfolioData={stockToPurchase}
+                  onDeleteClick={handleDeleteClick}
+                />
+              )}
             </>
           )}
         </>
@@ -190,7 +192,7 @@ const BuyTable: React.FC<{
 }> = ({ portfolioData, onDeleteClick }) => {
   const [availableFunds, setAvailableFunds] = React.useState(1700);
   return (
-    <Tile title="Buy Table">
+    <Tile title="Buy Table" className="BuyTable">
       <table>
         <thead>
           <tr>
@@ -216,6 +218,7 @@ const BuyTable: React.FC<{
   );
 };
 
+// TODO: Check for input type of counter...
 const BuyItemRow: React.FC<{
   item: PortfolioItem;
   availableFunds: number;
