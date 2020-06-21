@@ -32,5 +32,31 @@ tr:nth-child(even) {
 }
 
 .counter {
+  padding: 0;
   background-color: transparent;
+  color: black;
+  border: none;
+}
+
+.counter:hover {
+  cursor: pointer;
+}
+
+.counter:focus {
+  outline: none;
+}
+
+.arrow {
+  border: solid black;
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: 3px;
+}
+
+.right {
+  transform: rotate(-45deg);
+}
+
+.left {
+  transform: rotate(135deg);
 }

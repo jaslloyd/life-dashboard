@@ -226,22 +226,22 @@ const BuyItemRow: React.FC<{
     <tr>
       <td>{item.name}</td>
       <td>{item.currentStockValue}</td>
-      <td>{totalStockToBuy}</td>
       <td>
         <button
           className="counter"
           onClick={(_) => setTotalStockToBuy(totalStockToBuy - 1)}
         >
-          -
+          <i className="arrow left"></i>
         </button>
-        {totalStockToBuy * item.currentStockValue}
+        {totalStockToBuy}
         <button
           className="counter"
           onClick={(_) => setTotalStockToBuy(totalStockToBuy + 1)}
         >
-          +
+          <i className="arrow right"></i>
         </button>
       </td>
+      <td>{(totalStockToBuy * item.currentStockValue).toFixed(2)}</td>
       <td>
         <button onClick={(_) => onDeleteClick(item.id)}>X</button>
       </td>
