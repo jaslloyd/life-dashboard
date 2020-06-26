@@ -120,7 +120,7 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
                 portfolioData={apiResult}
                 onPurchaseClick={handlePurchaseClick}
               />
-              {stockToPurchase.length && (
+              {stockToPurchase.length > 0 && (
                 <BuyTable
                   portfolioData={stockToPurchase}
                   onDeleteClick={handleDeleteClick}
@@ -191,8 +191,18 @@ const BuyTable: React.FC<{
   onDeleteClick: (id: string) => void;
 }> = ({ portfolioData, onDeleteClick }) => {
   const [availableFunds, setAvailableFunds] = React.useState(1700);
+
+  React.useEffect(() => {}, []);
+
+  const handleItemUpdate = (total) => {
+    console.log(total);
+  };
+
   return (
-    <Tile title="Buy Table" className="BuyTable">
+    <Tile
+      title={`Buy Table - Available Funds ${availableFunds}`}
+      className="BuyTable"
+    >
       <table>
         <thead>
           <tr>
@@ -208,8 +218,8 @@ const BuyTable: React.FC<{
             <BuyItemRow
               key={lineItem.id}
               item={lineItem}
-              availableFunds={availableFunds}
               onDeleteClick={onDeleteClick}
+              onItemUpdate={handleItemUpdate}
             />
           ))}
         </tbody>
@@ -221,28 +231,28 @@ const BuyTable: React.FC<{
 // TODO: Check for input type of counter...
 const BuyItemRow: React.FC<{
   item: PortfolioItem;
-  availableFunds: number;
   onDeleteClick: (id: string) => void;
-}> = ({ item, onDeleteClick }) => {
+  onItemUpdate: (number: number) => void;
+}> = ({ item, onDeleteClick, onItemUpdate }) => {
   const [totalStockToBuy, setTotalStockToBuy] = React.useState(0);
   return (
     <tr>
       <td>{item.name}</td>
       <td>{item.currentStockValue}</td>
       <td>
-        <button
-          className="counter"
-          onClick={(_) => setTotalStockToBuy(totalStockToBuy - 1)}
-        >
-          <i className="arrow left"></i>
-        </button>
-        {totalStockToBuy}
-        <button
-          className="counter"
-          onClick={(_) => setTotalStockToBuy(totalStockToBuy + 1)}
-        >
-          <i className="arrow right"></i>
-        </button>
+        <input
+          type="number"
+          name="counter"
+          id="counter2"
+          min="1"
+          value={totalStockToBuy}
+          onChange={(e) => {
+            setTotalStockToBuy(+e.target.value);
+            onItemUpdate(
+              +(totalStockToBuy * item.currentStockValue).toFixed(2)
+            );
+          }}
+        />
       </td>
       <td>{(totalStockToBuy * item.currentStockValue).toFixed(2)}</td>
       <td>
