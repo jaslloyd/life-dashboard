@@ -73,8 +73,6 @@ const getPortfolio = async (sessionId) => {
     return acc;
   }, {});
 
-  console.log(totalsByCurrencies);
-
   const overallTotalInEuro = +(
     totalsByCurrencies["EUR"].currTotal +
     totalsByCurrencies["USD"].currTotal * rates.EUR
