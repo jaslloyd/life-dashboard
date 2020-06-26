@@ -35,6 +35,10 @@ tr:nth-child(even) {
   margin-top: 20px;
 }
 
+.BuyTable tbody tr td:nth-child(4) {
+  width: 10%;
+}
+
 .counter {
   padding: 0;
   background-color: transparent;
