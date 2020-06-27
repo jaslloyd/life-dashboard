@@ -25,12 +25,19 @@ interface PortfolioItem {
   totalBreakEvenPrice: number;
 }
 
+interface StockToBuy {
+  id: string;
+  name: string;
+  currentStockValue: number;
+  totalStockToBuy: number;
+}
+
 const formatMoney = (value: number) => new Intl.NumberFormat().format(value);
 
 const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
   const [apiResult, setApiResult] = React.useState(null);
   const [status, setStatus] = React.useState("loading");
-  const [stockToPurchase, setStockToPurchase] = React.useState<PortfolioItem[]>(
+  const [stockToPurchase, setStockToPurchase] = React.useState<StockToBuy[]>(
     []
   );
 
@@ -89,9 +96,17 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
     }
   };
 
-  const handlePurchaseClick = (line) => {
+  const handlePurchaseClick = (line: PortfolioItem) => {
     if (!stockToPurchase.find((stock) => stock.id === line.id)) {
-      setStockToPurchase([...stockToPurchase, line]);
+      setStockToPurchase([
+        ...stockToPurchase,
+        {
+          id: line.id,
+          name: line.name,
+          currentStockValue: line.currentStockValue,
+          totalStockToBuy: 1,
+        },
+      ]);
     }
   };
 
@@ -187,12 +202,10 @@ const InvestmentTable: React.FC<{
 };
 
 const BuyTable: React.FC<{
-  portfolioData: PortfolioItem[];
+  portfolioData: StockToBuy[];
   onDeleteClick: (id: string) => void;
 }> = ({ portfolioData, onDeleteClick }) => {
   const [availableFunds, setAvailableFunds] = React.useState(1700);
-
-  React.useEffect(() => {}, []);
 
   const handleItemUpdate = (total) => {
     console.log(total);
@@ -228,9 +241,8 @@ const BuyTable: React.FC<{
   );
 };
 
-// TODO: Check for input type of counter...
 const BuyItemRow: React.FC<{
-  item: PortfolioItem;
+  item: StockToBuy;
   onDeleteClick: (id: string) => void;
   onItemUpdate: (number: number) => void;
 }> = ({ item, onDeleteClick, onItemUpdate }) => {
