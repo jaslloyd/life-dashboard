@@ -1,6 +1,8 @@
 const DeGiro = require("degiro");
 const fetch = require("node-fetch");
 
+const LIQUIDITY_FUNDS_TO_IGNORE = ["15694498", "15694501", "14858895"];
+
 const login = async (code) => {
   const degiro = DeGiro.create({
     oneTimePassword: code,
@@ -24,7 +26,12 @@ const getPortfolio = async (sessionId) => {
   const portfolio = await degiro.getPortfolio();
 
   const { data: productData } = await degiro.getProductsByIds(
-    portfolio.portfolio.map((p) => p.id)
+    portfolio.portfolio
+      .filter(
+        (p) =>
+          ![...LIQUIDITY_FUNDS_TO_IGNORE, "EUR", "CAD", "USD"].includes(p.id)
+      )
+      .map((p) => p.id)
   );
 
   const takeValueFromPortfolio = (productInfo) => (valueToFind) =>
