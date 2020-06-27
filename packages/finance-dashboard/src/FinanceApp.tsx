@@ -40,7 +40,7 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
   const [apiResult, setApiResult] = React.useState(null);
   const [status, setStatus] = React.useState("loading");
   const [stockToPurchase, setStockToPurchase] = React.useState<StockToBuy[]>(
-    []
+    JSON.parse(localStorage.getItem("stockToPurchase")) || []
   );
   const [availableFunds, setAvailableFunds] = React.useState(AVAILABLE_FUNDS);
 
@@ -105,6 +105,7 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
       0
     );
     setAvailableFunds(AVAILABLE_FUNDS - total);
+    localStorage.setItem("stockToPurchase", JSON.stringify(stockToPurchase));
   }, [stockToPurchase]);
 
   const handlePurchaseClick = (line: PortfolioItem) => {
@@ -150,7 +151,6 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
           </div>
           {!summary && (
             <>
-              \
               <InvestmentTable
                 portfolioData={apiResult}
                 onPurchaseClick={handlePurchaseClick}
@@ -228,49 +228,47 @@ const BuyTable: React.FC<{
   onDeleteClick: (id: string) => void;
   onItemUpdate: (id: string, totalStockToBuy: number) => void;
   availableFunds: number;
-}> = ({ portfolioData, onDeleteClick, onItemUpdate, availableFunds }) => {
-  return (
-    <Tile
-      title={`Buy Table - Available Funds ${availableFunds}`}
-      className="BuyTable"
-    >
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Price per Share</th>
-            <th># of Shares</th>
-            <th>Total</th>
-            <th>Delete</th>
+}> = ({ portfolioData, onDeleteClick, onItemUpdate, availableFunds }) => (
+  <Tile
+    title={`Buy Table - Available Funds ${availableFunds}`}
+    className="BuyTable"
+  >
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Price per Share</th>
+          <th># of Shares</th>
+          <th>Total</th>
+          <th>Delete</th>
+        </tr>
+      </thead>
+      <tbody>
+        {portfolioData.map((item) => (
+          <tr key={item.id}>
+            <td>{item.name}</td>
+            <td>{item.currentStockValue}</td>
+            <td>
+              <input
+                type="number"
+                name="counter"
+                id="counter2"
+                min="1"
+                value={item.totalStockToBuy}
+                onChange={(e) => onItemUpdate(item.id, +e.target.value)}
+              />
+            </td>
+            <td>
+              {(item.totalStockToBuy * item.currentStockValue).toFixed(2)}
+            </td>
+            <td>
+              <button onClick={(_) => onDeleteClick(item.id)}>X</button>
+            </td>
           </tr>
-        </thead>
-        <tbody>
-          {portfolioData.map((item) => (
-            <tr key={item.id}>
-              <td>{item.name}</td>
-              <td>{item.currentStockValue}</td>
-              <td>
-                <input
-                  type="number"
-                  name="counter"
-                  id="counter2"
-                  min="1"
-                  value={item.totalStockToBuy}
-                  onChange={(e) => onItemUpdate(item.id, +e.target.value)}
-                />
-              </td>
-              <td>
-                {(item.totalStockToBuy * item.currentStockValue).toFixed(2)}
-              </td>
-              <td>
-                <button onClick={(_) => onDeleteClick(item.id)}>X</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </Tile>
-  );
-};
+        ))}
+      </tbody>
+    </table>
+  </Tile>
+);
 
 export default FinanceApp;
