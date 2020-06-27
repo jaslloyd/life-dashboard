@@ -32,6 +32,8 @@ interface StockToBuy {
   totalStockToBuy: number;
 }
 
+const AVAILABLE_FUNDS = 1700;
+
 const formatMoney = (value: number) => new Intl.NumberFormat().format(value);
 
 const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
@@ -40,7 +42,7 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
   const [stockToPurchase, setStockToPurchase] = React.useState<StockToBuy[]>(
     []
   );
-  const [availableFunds, setAvailableFunds] = React.useState(1700);
+  const [availableFunds, setAvailableFunds] = React.useState(AVAILABLE_FUNDS);
 
   React.useEffect(() => {
     fetchData();
@@ -97,6 +99,14 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
     }
   };
 
+  React.useEffect(() => {
+    const total = stockToPurchase.reduce(
+      (acc, curr) => acc + curr.currentStockValue * curr.totalStockToBuy,
+      0
+    );
+    setAvailableFunds(AVAILABLE_FUNDS - total);
+  }, [stockToPurchase]);
+
   const handlePurchaseClick = (line: PortfolioItem) => {
     if (!stockToPurchase.find((stock) => stock.id === line.id)) {
       setStockToPurchase([
@@ -140,6 +150,7 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
           </div>
           {!summary && (
             <>
+              \
               <InvestmentTable
                 portfolioData={apiResult}
                 onPurchaseClick={handlePurchaseClick}
