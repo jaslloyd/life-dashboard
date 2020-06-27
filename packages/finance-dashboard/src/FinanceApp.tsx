@@ -40,6 +40,7 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
   const [stockToPurchase, setStockToPurchase] = React.useState<StockToBuy[]>(
     []
   );
+  const [availableFunds, setAvailableFunds] = React.useState(1700);
 
   React.useEffect(() => {
     fetchData();
@@ -116,6 +117,14 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
     setStockToPurchase(newStocks);
   };
 
+  const handleItemUpdate = (id: string, totalStockToBuy: number) => {
+    const stockCopy = [...stockToPurchase];
+    const itemToUpdate = stockToPurchase.findIndex((stock) => stock.id === id);
+    stockCopy[itemToUpdate].totalStockToBuy = totalStockToBuy;
+
+    setStockToPurchase(stockCopy);
+  };
+
   return (
     <>
       {status === "idle" && (
@@ -139,6 +148,8 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
                 <BuyTable
                   portfolioData={stockToPurchase}
                   onDeleteClick={handleDeleteClick}
+                  onItemUpdate={handleItemUpdate}
+                  availableFunds={availableFunds}
                 />
               )}
             </>
@@ -204,13 +215,9 @@ const InvestmentTable: React.FC<{
 const BuyTable: React.FC<{
   portfolioData: StockToBuy[];
   onDeleteClick: (id: string) => void;
-}> = ({ portfolioData, onDeleteClick }) => {
-  const [availableFunds, setAvailableFunds] = React.useState(1700);
-
-  const handleItemUpdate = (total) => {
-    console.log(total);
-  };
-
+  onItemUpdate: (id: string, totalStockToBuy: number) => void;
+  availableFunds: number;
+}> = ({ portfolioData, onDeleteClick, onItemUpdate, availableFunds }) => {
   return (
     <Tile
       title={`Buy Table - Available Funds ${availableFunds}`}
@@ -227,50 +234,31 @@ const BuyTable: React.FC<{
           </tr>
         </thead>
         <tbody>
-          {portfolioData.map((lineItem) => (
-            <BuyItemRow
-              key={lineItem.id}
-              item={lineItem}
-              onDeleteClick={onDeleteClick}
-              onItemUpdate={handleItemUpdate}
-            />
+          {portfolioData.map((item) => (
+            <tr key={item.id}>
+              <td>{item.name}</td>
+              <td>{item.currentStockValue}</td>
+              <td>
+                <input
+                  type="number"
+                  name="counter"
+                  id="counter2"
+                  min="1"
+                  value={item.totalStockToBuy}
+                  onChange={(e) => onItemUpdate(item.id, +e.target.value)}
+                />
+              </td>
+              <td>
+                {(item.totalStockToBuy * item.currentStockValue).toFixed(2)}
+              </td>
+              <td>
+                <button onClick={(_) => onDeleteClick(item.id)}>X</button>
+              </td>
+            </tr>
           ))}
         </tbody>
       </table>
     </Tile>
-  );
-};
-
-const BuyItemRow: React.FC<{
-  item: StockToBuy;
-  onDeleteClick: (id: string) => void;
-  onItemUpdate: (number: number) => void;
-}> = ({ item, onDeleteClick, onItemUpdate }) => {
-  const [totalStockToBuy, setTotalStockToBuy] = React.useState(0);
-  return (
-    <tr>
-      <td>{item.name}</td>
-      <td>{item.currentStockValue}</td>
-      <td>
-        <input
-          type="number"
-          name="counter"
-          id="counter2"
-          min="1"
-          value={totalStockToBuy}
-          onChange={(e) => {
-            setTotalStockToBuy(+e.target.value);
-            onItemUpdate(
-              +(totalStockToBuy * item.currentStockValue).toFixed(2)
-            );
-          }}
-        />
-      </td>
-      <td>{(totalStockToBuy * item.currentStockValue).toFixed(2)}</td>
-      <td>
-        <button onClick={(_) => onDeleteClick(item.id)}>X</button>
-      </td>
-    </tr>
   );
 };
 
