@@ -223,7 +223,7 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
                           data: Object.keys(uniqueTypes).map(
                             (type) => uniqueTypes[type]
                           ),
-                          backgroundColor: ["green", "yellow", "red"],
+                          backgroundColor: ["yellow", "green", "red"],
                         },
                       ],
                       labels: Object.keys(uniqueTypes),
