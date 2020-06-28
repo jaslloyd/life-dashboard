@@ -36,6 +36,23 @@ const AVAILABLE_FUNDS = 1700;
 
 const formatMoney = (value: number) => new Intl.NumberFormat().format(value);
 
+function random_rgba() {
+  var o = Math.round,
+    r = Math.random,
+    s = 255;
+  return (
+    "rgba(" +
+    o(r() * s) +
+    "," +
+    o(r() * s) +
+    "," +
+    o(r() * s) +
+    "," +
+    r().toFixed(1) +
+    ")"
+  );
+}
+
 const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
   const [apiResult, setApiResult] = React.useState<Portfolio>(null);
   const [status, setStatus] = React.useState("loading");
@@ -43,30 +60,10 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
     JSON.parse(localStorage.getItem("stockToPurchase")) || []
   );
   const [availableFunds, setAvailableFunds] = React.useState(AVAILABLE_FUNDS);
+  const [uniqueTypes, setUniqueTypes] = React.useState([]);
 
   React.useEffect(() => {
     fetchData();
-  }, []);
-
-  React.useEffect(() => {
-    const ctx = document.getElementById("myChart");
-
-    console.log(ctx);
-    // @ts-ignore
-    // const myPieChart = new Chart(ctx, {
-    //   type: "doughnut",
-    //   data: {
-    //     datasets: [
-    //       {
-    //         data: [100, 200, 300],
-    //       },
-    //     ],
-    //     labels: ["red", "green", "blue"],
-    //   },
-    //   options: {
-    //     responsive: true,
-    //   },
-    // });
   }, []);
 
   const fetchData = async () => {
@@ -182,11 +179,32 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
                         data: apiResult.portfolioItems.map(
                           (item) => item.totalPositionValue
                         ),
+                        backgroundColor: apiResult.portfolioItems.map(
+                          random_rgba
+                        ),
                       },
                     ],
                     labels: apiResult.portfolioItems.map((item) => item.name),
                   }}
-                  options={{ maintainAspectRatio: false }}
+                  options={{ maintainAspectRatio: false, cutoutPercentage: 75 }}
+                />
+              </Tile>
+              <Tile title="Chart">
+                <Doughnut
+                  height={300}
+                  width={300}
+                  data={{
+                    datasets: [
+                      {
+                        data: apiResult.portfolioItems.map(
+                          (item) => item.productType
+                        ),
+                        backgroundColor: ["black", "pink", "green"],
+                      },
+                    ],
+                    labels: apiResult.portfolioItems.map((item) => item.name),
+                  }}
+                  options={{ maintainAspectRatio: false, cutoutPercentage: 75 }}
                 />
               </Tile>
               <InvestmentTable
