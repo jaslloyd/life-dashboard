@@ -215,15 +215,15 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
                 </Tile>
                 <Tile title="Chart">
                   <Doughnut
-                    height={300}
-                    width={300}
+                    height={150}
+                    width={150}
                     data={{
                       datasets: [
                         {
                           data: Object.keys(uniqueTypes).map(
                             (type) => uniqueTypes[type]
                           ),
-                          backgroundColor: ["black", "pink", "green"],
+                          backgroundColor: ["green", "yellow", "red"],
                         },
                       ],
                       labels: Object.keys(uniqueTypes),
