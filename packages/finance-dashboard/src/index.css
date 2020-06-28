@@ -68,3 +68,8 @@ tr:nth-child(even) {
 .left {
   transform: rotate(135deg);
 }
+
+.flex {
+  display: flex;
+  flex-direction: row;
+}

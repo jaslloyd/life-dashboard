@@ -60,7 +60,7 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
     JSON.parse(localStorage.getItem("stockToPurchase")) || []
   );
   const [availableFunds, setAvailableFunds] = React.useState(AVAILABLE_FUNDS);
-  const [uniqueTypes, setUniqueTypes] = React.useState([]);
+  const [uniqueTypes, setUniqueTypes] = React.useState({});
 
   React.useEffect(() => {
     fetchData();
@@ -76,9 +76,29 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
       });
 
       if (res.ok) {
-        const resultJSON = await res.json();
+        const resultJSON: Portfolio = await res.json();
 
         setApiResult(resultJSON);
+        const uniqueTypes = new Array(
+          ...new Set(resultJSON.portfolioItems.map((p) => p.productType))
+        );
+
+        // const b = [...a].map(cat => resultJSON.portfolioItems.filter(p => p.productType === cat).reduce((acc, curr) => acc[cat] + curr.totalPositionValue, {}));
+
+        const percentagesByType = resultJSON.portfolioItems.reduce(
+          (acc, curr) => {
+            if (acc[curr.productType]) {
+              acc[curr.productType] += curr.totalPositionValue;
+            } else {
+              acc[curr.productType] = curr.totalPositionValue;
+            }
+
+            return acc;
+          },
+          {}
+        );
+
+        setUniqueTypes(percentagesByType);
         setStatus("idle");
       } else {
         if (res.status === 401) {
@@ -169,44 +189,53 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
           </div>
           {!summary && (
             <>
-              <Tile title="Chart">
-                <Doughnut
-                  height={300}
-                  width={300}
-                  data={{
-                    datasets: [
-                      {
-                        data: apiResult.portfolioItems.map(
-                          (item) => item.totalPositionValue
-                        ),
-                        backgroundColor: apiResult.portfolioItems.map(
-                          random_rgba
-                        ),
-                      },
-                    ],
-                    labels: apiResult.portfolioItems.map((item) => item.name),
-                  }}
-                  options={{ maintainAspectRatio: false, cutoutPercentage: 75 }}
-                />
-              </Tile>
-              <Tile title="Chart">
-                <Doughnut
-                  height={300}
-                  width={300}
-                  data={{
-                    datasets: [
-                      {
-                        data: apiResult.portfolioItems.map(
-                          (item) => item.productType
-                        ),
-                        backgroundColor: ["black", "pink", "green"],
-                      },
-                    ],
-                    labels: apiResult.portfolioItems.map((item) => item.name),
-                  }}
-                  options={{ maintainAspectRatio: false, cutoutPercentage: 75 }}
-                />
-              </Tile>
+              <div className="flex">
+                <Tile title="Chart">
+                  <Doughnut
+                    height={300}
+                    width={300}
+                    data={{
+                      datasets: [
+                        {
+                          data: apiResult.portfolioItems.map(
+                            (item) => item.totalPositionValue
+                          ),
+                          backgroundColor: apiResult.portfolioItems.map(
+                            random_rgba
+                          ),
+                        },
+                      ],
+                      labels: apiResult.portfolioItems.map((item) => item.name),
+                    }}
+                    options={{
+                      maintainAspectRatio: false,
+                      cutoutPercentage: 75,
+                    }}
+                  />
+                </Tile>
+                <Tile title="Chart">
+                  <Doughnut
+                    height={300}
+                    width={300}
+                    data={{
+                      datasets: [
+                        {
+                          data: Object.keys(uniqueTypes).map(
+                            (type) => uniqueTypes[type]
+                          ),
+                          backgroundColor: ["black", "pink", "green"],
+                        },
+                      ],
+                      labels: Object.keys(uniqueTypes),
+                    }}
+                    options={{
+                      maintainAspectRatio: false,
+                      cutoutPercentage: 75,
+                    }}
+                  />
+                </Tile>
+              </div>
+
               <InvestmentTable
                 portfolioData={apiResult}
                 onPurchaseClick={handlePurchaseClick}
