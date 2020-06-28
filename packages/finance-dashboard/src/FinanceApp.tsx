@@ -2,13 +2,13 @@ import React from "react";
 import { Tile, SkeltonTile } from "./Tile";
 import Login from "./Login";
 import InvestTotals from "./InvestTotals";
+import { Doughnut } from "react-chartjs-2";
 
 type Currency = "EUR" | "USD";
 
 interface Portfolio {
-  usdTotal: number;
-  eurTotal: number;
   overallTotalInEuro: number;
+  overBETotalInEuro: number;
   portfolioItems: PortfolioItem[];
 }
 
@@ -37,7 +37,7 @@ const AVAILABLE_FUNDS = 1700;
 const formatMoney = (value: number) => new Intl.NumberFormat().format(value);
 
 const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
-  const [apiResult, setApiResult] = React.useState(null);
+  const [apiResult, setApiResult] = React.useState<Portfolio>(null);
   const [status, setStatus] = React.useState("loading");
   const [stockToPurchase, setStockToPurchase] = React.useState<StockToBuy[]>(
     JSON.parse(localStorage.getItem("stockToPurchase")) || []
@@ -46,6 +46,27 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
 
   React.useEffect(() => {
     fetchData();
+  }, []);
+
+  React.useEffect(() => {
+    const ctx = document.getElementById("myChart");
+
+    console.log(ctx);
+    // @ts-ignore
+    // const myPieChart = new Chart(ctx, {
+    //   type: "doughnut",
+    //   data: {
+    //     datasets: [
+    //       {
+    //         data: [100, 200, 300],
+    //       },
+    //     ],
+    //     labels: ["red", "green", "blue"],
+    //   },
+    //   options: {
+    //     responsive: true,
+    //   },
+    // });
   }, []);
 
   const fetchData = async () => {
@@ -76,7 +97,7 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
 
   const handleLogin = async (code: string) => {
     try {
-      setApiResult("loading");
+      setStatus("loading");
       const resp = await fetch(`http://localhost:3000/api/v1/login`, {
         headers: {
           "Content-Type": "application/json",
@@ -151,6 +172,23 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
           </div>
           {!summary && (
             <>
+              <Tile title="Chart">
+                <Doughnut
+                  height={300}
+                  width={300}
+                  data={{
+                    datasets: [
+                      {
+                        data: apiResult.portfolioItems.map(
+                          (item) => item.totalPositionValue
+                        ),
+                      },
+                    ],
+                    labels: apiResult.portfolioItems.map((item) => item.name),
+                  }}
+                  options={{ maintainAspectRatio: false }}
+                />
+              </Tile>
               <InvestmentTable
                 portfolioData={apiResult}
                 onPurchaseClick={handlePurchaseClick}

@@ -20,7 +20,7 @@ module.exports = (env) => {
     devtool: "source-map",
     // instructs webpack on how and where it should output your bundles, assets and anything else you bundle or load with webpack.
     output: {
-      path: __dirname + "/build",
+      path: path.join(__dirname, "build"),
       publicPath: "http://localhost:3002/",
       filename: isEnvProduction
         ? "static/js/[name].[contenthash].js"
