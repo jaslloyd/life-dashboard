@@ -198,27 +198,30 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
 
 const InvestmentsChart: React.FC<{ portfolioItems: PortfolioItem[] }> = ({
   portfolioItems,
-}) => (
-  <Tile title="Chart">
-    <Doughnut
-      height={300}
-      width={300}
-      data={{
-        datasets: [
-          {
-            data: portfolioItems.map((item) => item.totalPositionValue),
-            backgroundColor: portfolioItems.map(random_rgba),
-          },
-        ],
-        labels: portfolioItems.map((item) => item.name),
-      }}
-      options={{
-        maintainAspectRatio: false,
-        cutoutPercentage: 75,
-      }}
-    />
-  </Tile>
-);
+}) => {
+  const [colors] = React.useState(portfolioItems.map(random_rgba));
+  return (
+    <Tile title="Chart">
+      <Doughnut
+        height={300}
+        width={300}
+        data={{
+          datasets: [
+            {
+              data: portfolioItems.map((item) => item.totalPositionValue),
+              backgroundColor: colors,
+            },
+          ],
+          labels: portfolioItems.map((item) => item.name),
+        }}
+        options={{
+          maintainAspectRatio: false,
+          cutoutPercentage: 75,
+        }}
+      />
+    </Tile>
+  );
+};
 
 const InvestmentsByTypeChart: React.FC<{ types: Record<string, number> }> = ({
   types,
