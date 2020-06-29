@@ -193,8 +193,6 @@ const InvestmentsChart: React.FC<{ portfolioItems: PortfolioItem[] }> = ({
   return (
     <Tile title="Invests by Product" className="InvestmentsChart">
       <Doughnut
-        height={300}
-        width={300}
         data={{
           datasets: [
             {
@@ -205,7 +203,6 @@ const InvestmentsChart: React.FC<{ portfolioItems: PortfolioItem[] }> = ({
           labels: portfolioItems.map((item) => item.name),
         }}
         options={{
-          maintainAspectRatio: false,
           cutoutPercentage: 75,
           legend: {
             position: "right",

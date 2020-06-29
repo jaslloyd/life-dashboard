@@ -61,6 +61,7 @@ tr:nth-child(even) {
 
 .InvestmentsChart {
   margin-bottom: 20px;
+  max-width: 1000px;
 }
 
 @media only screen and (max-width: 768px) {
