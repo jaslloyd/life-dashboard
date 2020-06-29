@@ -29,8 +29,9 @@ function random_rgba() {
 }
 
 const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
-  const [apiResult, setApiResult] = React.useState<Portfolio>(null);
+  // TODO: This data is highly related to each other so use a useReducer
   const [status, setStatus] = React.useState("loading");
+  const [apiResult, setApiResult] = React.useState<Portfolio>(null);
   const [stockToPurchase, setStockToPurchase] = React.useState<StockToBuy[]>(
     JSON.parse(localStorage.getItem("stockToPurchase")) || []
   );
