@@ -93,7 +93,7 @@ const getPortfolio = async (sessionId) => {
   return {
     overallTotalInEuro,
     overBETotalInEuro,
-    portfolioItems: result,
+    portfolioItems: result.sort((a, b) => a.name.localeCompare(b.name)),
     portfolio,
   };
 };
