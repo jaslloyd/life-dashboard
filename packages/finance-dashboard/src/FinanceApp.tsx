@@ -201,7 +201,7 @@ const InvestmentsChart: React.FC<{ portfolioItems: PortfolioItem[] }> = ({
 }) => {
   const [colors] = React.useState(portfolioItems.map(random_rgba));
   return (
-    <Tile title="Chart">
+    <Tile title="Chart" className="Chart">
       <Doughnut
         height={300}
         width={300}
@@ -226,7 +226,7 @@ const InvestmentsChart: React.FC<{ portfolioItems: PortfolioItem[] }> = ({
 const InvestmentsByTypeChart: React.FC<{ types: Record<string, number> }> = ({
   types,
 }) => (
-  <Tile title="Chart">
+  <Tile title="Chart" className="Chart">
     <Doughnut
       height={150}
       width={150}

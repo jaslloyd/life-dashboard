@@ -59,3 +59,7 @@ tr:nth-child(even) {
   grid-template-columns: 1fr 300px;
   margin-bottom: 20px;
 }
+
+.Chart {
+  overflow: hidden;
+}
