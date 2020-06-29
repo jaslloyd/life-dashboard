@@ -7,7 +7,7 @@ const InvestmentTable: React.FC<{
   onPurchaseClick: (item: PortfolioItem) => void;
 }> = ({ portfolioData, onPurchaseClick }) => {
   return (
-    <Tile title="Investment Portfolio">
+    <Tile title="Investment Portfolio" className="InvestmentTable">
       <table>
         <thead>
           <tr>

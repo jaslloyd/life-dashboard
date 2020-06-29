@@ -16,15 +16,7 @@ function random_rgba() {
     r = Math.random,
     s = 255;
   return (
-    "rgba(" +
-    o(r() * s) +
-    "," +
-    o(r() * s) +
-    "," +
-    o(r() * s) +
-    "," +
-    r().toFixed(1) +
-    ")"
+    "rgba(" + o(r() * s) + "," + o(r() * s) + "," + o(r() * s) + "," + 1 + ")"
   );
 }
 
@@ -118,7 +110,7 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
       (acc, curr) => acc + curr.currentStockValue * curr.totalStockToBuy,
       0
     );
-    setAvailableFunds(AVAILABLE_FUNDS - total);
+    setAvailableFunds(+(AVAILABLE_FUNDS - total).toFixed(2));
     localStorage.setItem("stockToPurchase", JSON.stringify(stockToPurchase));
   }, [stockToPurchase]);
 
@@ -199,7 +191,7 @@ const InvestmentsChart: React.FC<{ portfolioItems: PortfolioItem[] }> = ({
 }) => {
   const [colors] = React.useState(portfolioItems.map(random_rgba));
   return (
-    <Tile title="Chart" className="InvestmentsChart">
+    <Tile title="Invests by Product" className="InvestmentsChart">
       <Doughnut
         height={300}
         width={300}
@@ -227,7 +219,7 @@ const InvestmentsChart: React.FC<{ portfolioItems: PortfolioItem[] }> = ({
 const InvestmentsByTypeChart: React.FC<{ types: Record<string, number> }> = ({
   types,
 }) => (
-  <Tile title="Chart">
+  <Tile title="Investments by Type">
     <Doughnut
       data={{
         datasets: [
