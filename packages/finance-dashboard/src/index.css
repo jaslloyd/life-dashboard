@@ -54,7 +54,8 @@ tr:nth-child(even) {
   transform: rotate(135deg);
 }
 
-.flex {
+.charts {
   display: grid;
   grid-template-columns: 1fr 300px;
+  margin-bottom: 20px;
 }
