@@ -2,35 +2,10 @@ import React from "react";
 import { Tile, SkeltonTile } from "./Tile";
 import Login from "./Login";
 import InvestTotals from "./InvestTotals";
+import BuyTable from "./BuyTable";
+import InvestmentTable from "./InvestmentTable";
 import { Doughnut } from "react-chartjs-2";
-
-type Currency = "EUR" | "USD";
-
-interface Portfolio {
-  overallTotalInEuro: number;
-  overBETotalInEuro: number;
-  portfolioItems: PortfolioItem[];
-}
-
-interface PortfolioItem {
-  id: string;
-  tickerSymbol: string;
-  name: string;
-  productType: string;
-  sharesHeld: number;
-  currentStockValue: number;
-  stockValueBreakEvenPrice: number;
-  totalPositionValue: number;
-  stockCurrency: Currency;
-  totalBreakEvenPrice: number;
-}
-
-interface StockToBuy {
-  id: string;
-  name: string;
-  currentStockValue: number;
-  totalStockToBuy: number;
-}
+import { Portfolio, PortfolioItem, StockToBuy } from "./types";
 
 const AVAILABLE_FUNDS = 1700;
 
@@ -261,99 +236,5 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
     </>
   );
 };
-
-const InvestmentTable: React.FC<{
-  portfolioData: Portfolio;
-  onPurchaseClick: (item: PortfolioItem) => void;
-}> = ({ portfolioData, onPurchaseClick }) => {
-  return (
-    <Tile title="Investment Portfolio">
-      <table>
-        <thead>
-          <tr>
-            <th>Ticker</th>
-            <th>Name</th>
-            <th>Product Type</th>
-            <th># Shares Held</th>
-            <th>Current Stock Value</th>
-            <th>Break Event Point</th>
-            <th>Total Position Value</th>
-            <th>Purchase?</th>
-          </tr>
-        </thead>
-        <tbody>
-          {portfolioData.portfolioItems.map((lineItem) => (
-            <tr key={lineItem.id}>
-              <td>{lineItem.tickerSymbol}</td>
-              <td>{lineItem.name}</td>
-              <td>{lineItem.productType}</td>
-              <td>{lineItem.sharesHeld}</td>
-              <td>{lineItem.currentStockValue}</td>
-              <td>{lineItem.stockValueBreakEvenPrice}</td>
-              <td>
-                {lineItem.stockCurrency === "USD" ? "$" : "€"}
-                {lineItem.totalPositionValue}
-                {lineItem.totalBreakEvenPrice > lineItem.totalPositionValue
-                  ? "-"
-                  : "+"}
-              </td>
-              <td>
-                <button onClick={(_) => onPurchaseClick(lineItem)}>+</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </Tile>
-  );
-};
-
-const BuyTable: React.FC<{
-  portfolioData: StockToBuy[];
-  onDeleteClick: (id: string) => void;
-  onItemUpdate: (id: string, totalStockToBuy: number) => void;
-  availableFunds: number;
-}> = ({ portfolioData, onDeleteClick, onItemUpdate, availableFunds }) => (
-  <Tile
-    title={`Buy Table - Available Funds ${availableFunds}`}
-    className="BuyTable"
-  >
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Price per Share</th>
-          <th># of Shares</th>
-          <th>Total</th>
-          <th>Delete</th>
-        </tr>
-      </thead>
-      <tbody>
-        {portfolioData.map((item) => (
-          <tr key={item.id}>
-            <td>{item.name}</td>
-            <td>{item.currentStockValue}</td>
-            <td>
-              <input
-                type="number"
-                name="counter"
-                id="counter2"
-                min="1"
-                value={item.totalStockToBuy}
-                onChange={(e) => onItemUpdate(item.id, +e.target.value)}
-              />
-            </td>
-            <td>
-              {(item.totalStockToBuy * item.currentStockValue).toFixed(2)}
-            </td>
-            <td>
-              <button onClick={(_) => onDeleteClick(item.id)}>X</button>
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  </Tile>
-);
 
 export default FinanceApp;
