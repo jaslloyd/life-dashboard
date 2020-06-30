@@ -33,7 +33,6 @@ module.exports = (env) => {
     devServer: {
       contentBase: path.join(__dirname, "dist"),
       port: "3002",
-      hot: true,
     },
     // Customize Webpack Optimization
     optimization: {

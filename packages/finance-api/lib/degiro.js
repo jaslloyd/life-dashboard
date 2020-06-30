@@ -7,6 +7,7 @@ const LIQUIDITY_FUNDS_TO_IGNORE = [
   "14858895",
   "4667924",
   "5173554",
+  "4660556",
 ];
 
 const login = async (code) => {

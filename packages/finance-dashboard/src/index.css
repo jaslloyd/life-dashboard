@@ -73,4 +73,13 @@ tr:nth-child(even) {
   .InvestmentTable tr td:nth-child(6) {
     display: none;
   }
+
+  .summary-panels {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .InvestTotals,
+  .InvestTotals > .Tile {
+    max-width: 100%;
+  }
 }
