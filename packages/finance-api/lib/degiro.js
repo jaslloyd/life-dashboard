@@ -1,7 +1,13 @@
 const DeGiro = require("degiro");
 const fetch = require("node-fetch");
 
-const LIQUIDITY_FUNDS_TO_IGNORE = ["15694498", "15694501", "14858895"];
+const LIQUIDITY_FUNDS_TO_IGNORE = [
+  "15694498",
+  "15694501",
+  "14858895",
+  "4667924",
+  "5173554",
+];
 
 const login = async (code) => {
   const degiro = DeGiro.create({
