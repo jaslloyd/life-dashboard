@@ -191,7 +191,7 @@ const InvestmentsChart: React.FC<{ portfolioItems: PortfolioItem[] }> = ({
 }) => {
   const [colors] = React.useState(portfolioItems.map(random_rgba));
   return (
-    <Tile title="Invests by Product" className="InvestmentsChart">
+    <Tile title="Investments by Product" className="InvestmentsChart">
       <Doughnut
         data={{
           datasets: [

@@ -59,6 +59,14 @@ tr:nth-child(even) {
   overflow: hidden;
 }
 
+.negative {
+  color: red;
+}
+
+.positive {
+  color: green;
+}
+
 .InvestmentsChart {
   margin-bottom: 20px;
   max-width: 1000px;

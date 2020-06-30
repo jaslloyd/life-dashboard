@@ -30,12 +30,20 @@ const InvestmentTable: React.FC<{
               <td>{lineItem.sharesHeld}</td>
               <td>{lineItem.currentStockValue}</td>
               <td>{lineItem.stockValueBreakEvenPrice}</td>
-              <td>
+              <td
+                className={
+                  lineItem.totalBreakEvenPrice > lineItem.totalPositionValue
+                    ? "negative"
+                    : "positive"
+                }
+              >
                 {lineItem.stockCurrency === "USD" ? "$" : "€"}
-                {lineItem.totalPositionValue}
-                {lineItem.totalBreakEvenPrice > lineItem.totalPositionValue
-                  ? "-"
-                  : "+"}
+                {lineItem.totalPositionValue} ({lineItem.totalBreakEvenPrice})
+                {lineItem.totalBreakEvenPrice > lineItem.totalPositionValue ? (
+                  <span>-</span>
+                ) : (
+                  <span>+</span>
+                )}
               </td>
               <td>
                 <button onClick={(_) => onPurchaseClick(lineItem)}>+</button>

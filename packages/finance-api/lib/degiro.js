@@ -60,6 +60,7 @@ const getPortfolio = async (sessionId) => {
       sharesHeld: findValue("size"),
       currentStockValue: findValue("price"),
       stockValueBreakEvenPrice: +findValue("breakEvenPrice").toFixed(2),
+      // Check this value, it might be taking some other things into account
       totalPositionValue: +findValue("value").toFixed(2),
       stockCurrency: product.currency,
       totalBreakEvenPrice: +(
