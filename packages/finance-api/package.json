@@ -1,5 +1,5 @@
 {
-  "name": "finance-api",
+  "name": "@life-dashboard/finance-api",
   "version": "0.0.0",
   "private": true,
   "scripts": {

@@ -22,34 +22,64 @@ const InvestmentTable: React.FC<{
           </tr>
         </thead>
         <tbody>
-          {portfolioData.portfolioItems.map((lineItem) => (
-            <tr key={lineItem.id}>
-              <td>{lineItem.tickerSymbol}</td>
-              <td>{lineItem.name}</td>
-              <td>{lineItem.productType}</td>
-              <td>{lineItem.sharesHeld}</td>
-              <td>{lineItem.currentStockValue}</td>
-              <td>{lineItem.stockValueBreakEvenPrice}</td>
-              <td
-                className={
-                  lineItem.totalBreakEvenPrice > lineItem.totalPositionValue
-                    ? "negative"
-                    : "positive"
-                }
-              >
-                {lineItem.stockCurrency === "USD" ? "$" : "€"}
-                {lineItem.totalPositionValue} ({lineItem.totalBreakEvenPrice})
-                {lineItem.totalBreakEvenPrice > lineItem.totalPositionValue ? (
-                  <span>-</span>
-                ) : (
-                  <span>+</span>
-                )}
-              </td>
-              <td>
-                <button onClick={(_) => onPurchaseClick(lineItem)}>+</button>
-              </td>
-            </tr>
-          ))}
+          {portfolioData.portfolioItems.map(
+            ({
+              id,
+              tickerSymbol,
+              name,
+              productType,
+              sharesHeld,
+              currentStockValue,
+              stockValueBreakEvenPrice,
+              totalBreakEvenPrice,
+              totalPositionValue,
+              stockCurrency,
+            }) => (
+              <tr key={id}>
+                <td>{tickerSymbol}</td>
+                <td>{name}</td>
+                <td>{productType}</td>
+                <td>{sharesHeld}</td>
+                <td>{currentStockValue}</td>
+                <td>{stockValueBreakEvenPrice}</td>
+                <td
+                  className={
+                    totalBreakEvenPrice > totalPositionValue
+                      ? "negative"
+                      : "positive"
+                  }
+                >
+                  {stockCurrency === "USD" ? "$" : "€"}
+                  {totalPositionValue} ({totalBreakEvenPrice})
+                  {totalBreakEvenPrice > totalPositionValue ? (
+                    <span>-</span>
+                  ) : (
+                    <span>+</span>
+                  )}
+                </td>
+                <td>
+                  <button
+                    onClick={(_) =>
+                      onPurchaseClick({
+                        id,
+                        tickerSymbol,
+                        name,
+                        productType,
+                        sharesHeld,
+                        currentStockValue,
+                        stockValueBreakEvenPrice,
+                        totalBreakEvenPrice,
+                        totalPositionValue,
+                        stockCurrency,
+                      })
+                    }
+                  >
+                    +
+                  </button>
+                </td>
+              </tr>
+            )
+          )}
         </tbody>
       </table>
     </Tile>

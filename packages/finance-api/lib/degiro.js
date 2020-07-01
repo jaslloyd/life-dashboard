@@ -60,8 +60,10 @@ const getPortfolio = async (sessionId) => {
       sharesHeld: findValue("size"),
       currentStockValue: findValue("price"),
       stockValueBreakEvenPrice: +findValue("breakEvenPrice").toFixed(2),
-      // Check this value, it might be taking some other things into account
-      totalPositionValue: +findValue("value").toFixed(2),
+      //TODO: Check this value, it might be taking some other things into account
+      totalPositionValue: +(
+        findValue("price").toFixed(2) * findValue("size")
+      ).toFixed(2),
       stockCurrency: product.currency,
       totalBreakEvenPrice: +(
         findValue("breakEvenPrice") * findValue("size")
@@ -87,6 +89,8 @@ const getPortfolio = async (sessionId) => {
     }
     return acc;
   }, {});
+
+  console.log(totalsByCurrencies);
 
   const overallTotalInEuro = +(
     totalsByCurrencies["EUR"].currTotal +
