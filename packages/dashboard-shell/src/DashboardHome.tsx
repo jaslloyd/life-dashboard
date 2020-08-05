@@ -1,17 +1,17 @@
-import React from "react";
-import Navbar from "./Navbar";
-import FinanceTile from "finance/FinanceTile";
-import "./index.css";
+import React from 'react'
+import Navbar from './Navbar'
+import FinanceTile from 'finance/FinanceTile'
+import './index.css'
 
 const DashboardHome: React.FC = () => (
-  <>
-    <aside>
-      <Navbar />
-    </aside>
-    <main>
-      <FinanceTile summary />
-    </main>
-  </>
-);
+    <>
+        <aside>
+            <Navbar />
+        </aside>
+        <main>
+            <FinanceTile summary />
+        </main>
+    </>
+)
 
-export default DashboardHome;
+export default DashboardHome

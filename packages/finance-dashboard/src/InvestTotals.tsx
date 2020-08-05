@@ -1,19 +1,19 @@
-import React from "react";
-import { Tile } from "./Tile";
-import "./InvestTotals.css";
+import React from 'react'
+import { Tile } from './Tile'
+import './InvestTotals.css'
 
 const InvestTotals: React.FC<{ title?: string; value: string }> = ({
-  title = "Total",
-  value,
+    title = 'Total',
+    value,
 }) => (
-  <div className="InvestTotals">
-    <Tile title={title} className="overall-total">
-      <h5>
-        <span>€</span>
-        {value}
-      </h5>
-    </Tile>
-  </div>
-);
+    <div className="InvestTotals">
+        <Tile title={title} className="overall-total">
+            <h5>
+                <span>€</span>
+                {value}
+            </h5>
+        </Tile>
+    </div>
+)
 
-export default InvestTotals;
+export default InvestTotals

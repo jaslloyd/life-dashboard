@@ -1,22 +1,22 @@
-import React from "react";
-import "./Tile.css";
+import React from 'react'
+import './Tile.css'
 
 const Tile: React.FC<{ title: string; className?: string }> = ({
-  title,
-  className = "",
-  children,
+    title,
+    className = '',
+    children,
 }) => (
-  <div className={`Tile ${className}`}>
-    <h4>{title}</h4>
-    {children}
-  </div>
-);
+    <div className={`Tile ${className}`}>
+        <h4>{title}</h4>
+        {children}
+    </div>
+)
 
 const SkeltonTile: React.FC = () => (
-  <div className="summary-panels">
-    <div className="Tile Skeleton" />
-    <div className="Tile Skeleton" />
-  </div>
-);
+    <div className="summary-panels">
+        <div className="Tile Skeleton" />
+        <div className="Tile Skeleton" />
+    </div>
+)
 
-export { Tile, SkeltonTile };
+export { Tile, SkeltonTile }

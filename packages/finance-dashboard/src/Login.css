@@ -1,13 +1,13 @@
-input[type="password"] {
-  width: 100%;
-  padding: 10px 20px;
-  margin: 8px 0;
-  box-sizing: border-box;
+input[type='password'] {
+    width: 100%;
+    padding: 10px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
 }
 
 button {
-  background-color: var(--primary);
-  color: white;
-  padding: 10px 30px;
-  border-radius: 5%;
+    background-color: var(--primary);
+    color: white;
+    padding: 10px 30px;
+    border-radius: 5%;
 }
