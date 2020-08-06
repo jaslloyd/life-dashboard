@@ -23,5 +23,6 @@ export interface StockToBuy {
   id: string
   name: string
   currentStockValue: number
+  breakEvenPrice: number
   totalStockToBuy: number
 }

@@ -31,7 +31,7 @@ module.exports = (env) => {
     },
     // This tells webpack-dev-server to serve the files from the dist directory on localhost:8080
     devServer: {
-      contentBase: path.join(__dirname, 'dist'),
+      contentBase: path.join(__dirname, 'build'),
       port: '3002',
     },
     // Customize Webpack Optimization
@@ -40,7 +40,7 @@ module.exports = (env) => {
     },
     // These options change how modules are resolved.
     resolve: {
-      extensions: ['.ts', '.tsx', '.js'],
+      extensions: ['.ts', '.tsx', '.js', '.jsx'],
     },
     // Out of the box, webpack only understands JavaScript and JSON files. Loaders allow webpack to process other types of files and convert them into valid modules that can be consumed by your application and added to the dependency graph.
     module: {
@@ -58,6 +58,10 @@ module.exports = (env) => {
         {
           test: /\.css$/,
           use: [MiniCssExtractPlugin.loader, 'css-loader'],
+        },
+        {
+          test: /\.svg$/,
+          use: 'file-loader',
         },
       ],
     },

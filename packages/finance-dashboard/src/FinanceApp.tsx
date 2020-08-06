@@ -58,7 +58,7 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
 
             return acc
           },
-          {}
+          {} as any
         )
 
         setUniqueTypes(percentagesByType)
@@ -110,6 +110,7 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
   }, [stockToPurchase])
 
   const handlePurchaseClick = (line: PortfolioItem) => {
+    console.log(line)
     if (!stockToPurchase.find((stock) => stock.id === line.id)) {
       setStockToPurchase([
         ...stockToPurchase,
@@ -117,6 +118,7 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
           id: line.id,
           name: line.name,
           currentStockValue: line.currentStockValue,
+          breakEvenPrice: line.stockValueBreakEvenPrice,
           totalStockToBuy: 1,
         },
       ])

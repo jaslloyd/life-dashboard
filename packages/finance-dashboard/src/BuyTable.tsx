@@ -17,6 +17,7 @@ const BuyTable: React.FC<{
         <tr>
           <th>Name</th>
           <th>Price per Share</th>
+          <th>Break Event Point</th>
           <th># of Shares</th>
           <th>Total</th>
           <th>Delete</th>
@@ -27,6 +28,7 @@ const BuyTable: React.FC<{
           <tr key={item.id}>
             <td>{item.name}</td>
             <td>{item.currentStockValue}</td>
+            <td>{item.breakEvenPrice}</td>
             <td>
               <input
                 type="number"
