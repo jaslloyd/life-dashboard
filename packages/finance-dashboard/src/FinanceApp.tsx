@@ -24,6 +24,9 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
   // TODO: This data is highly related to each other so use a useReducer
   const [status, setStatus] = React.useState('loading')
   const [apiResult, setApiResult] = React.useState<Portfolio>(null)
+  const [displayedPortfolio, setDisplayPortfolio] = React.useState<
+    PortfolioItem[]
+  >(null)
   const [stockToPurchase, setStockToPurchase] = React.useState<StockToBuy[]>(
     JSON.parse(localStorage.getItem('stockToPurchase')) || []
   )
@@ -47,6 +50,7 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
         const resultJSON: Portfolio = await res.json()
 
         setApiResult(resultJSON)
+        setDisplayPortfolio(resultJSON.portfolioItems)
 
         const percentagesByType = resultJSON.portfolioItems.reduce(
           (acc, curr) => {
@@ -125,6 +129,16 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
     }
   }
 
+  const handlePortfolioSearch = (e) => {
+    const filteredPortfolioData = apiResult.portfolioItems.filter(
+      (item) =>
+        item.tickerSymbol.includes(e.target.value) ||
+        item.name.includes(e.target.value)
+    )
+    console.log(filteredPortfolioData)
+    setDisplayPortfolio(filteredPortfolioData)
+  }
+
   const handleDeleteClick = (id: string) => {
     const newStocks = stockToPurchase.filter((stock) => stock.id !== id)
     setStockToPurchase(newStocks)
@@ -157,8 +171,9 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
               <InvestmentsChart portfolioItems={apiResult.portfolioItems} />
 
               <InvestmentTable
-                portfolioData={apiResult}
+                portfolioItems={displayedPortfolio}
                 onPurchaseClick={handlePurchaseClick}
+                searchPortfolio={handlePortfolioSearch}
               />
               {stockToPurchase.length > 0 && (
                 <BuyTable

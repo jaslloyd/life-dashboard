@@ -1,13 +1,15 @@
 import React from 'react'
 import { Tile } from './Tile'
-import { Portfolio, PortfolioItem } from './types'
+import { PortfolioItem } from './types'
 
 const InvestmentTable: React.FC<{
-  portfolioData: Portfolio
+  portfolioItems: PortfolioItem[]
   onPurchaseClick: (item: PortfolioItem) => void
-}> = ({ portfolioData, onPurchaseClick }) => {
+  searchPortfolio: (e: any) => void
+}> = ({ portfolioItems, onPurchaseClick, searchPortfolio }) => {
   return (
     <Tile title="Investment Portfolio" className="InvestmentTable">
+      <input type="text" placeholder="search" onChange={searchPortfolio} />
       <table>
         <thead>
           <tr>
@@ -22,7 +24,7 @@ const InvestmentTable: React.FC<{
           </tr>
         </thead>
         <tbody>
-          {portfolioData.portfolioItems.map(
+          {portfolioItems.map(
             ({
               id,
               tickerSymbol,
