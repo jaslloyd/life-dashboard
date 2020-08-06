@@ -11,14 +11,16 @@ const AVAILABLE_FUNDS = 1700
 
 const formatMoney = (value: number) => new Intl.NumberFormat().format(value)
 
-const random_rgba = () => {
-  const o = Math.round,
-    r = Math.random,
-    s = 255
-  return (
-    'rgba(' + o(r() * s) + ',' + o(r() * s) + ',' + o(r() * s) + ',' + 1 + ')'
-  )
-}
+const random_rgba = () =>
+  'rgba(' +
+  Math.round(Math.random() * 255) +
+  ',' +
+  Math.round(Math.random() * 255) +
+  ',' +
+  Math.round(Math.random() * 255) +
+  ',' +
+  1 +
+  ')'
 
 const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
   // TODO: This data is highly related to each other so use a useReducer
@@ -42,7 +44,7 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
       const res = await fetch(`http://localhost:3000/api/v1/portfolio`, {
         credentials: 'include',
         headers: {
-          Authorization: localStorage.getItem('SESSION_ID'),
+          Authorization: localStorage.getItem('SESSION_ID') || '',
         },
       })
 
@@ -135,7 +137,6 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
         item.tickerSymbol.includes(e.target.value) ||
         item.name.includes(e.target.value)
     )
-    console.log(filteredPortfolioData)
     setDisplayPortfolio(filteredPortfolioData)
   }
 

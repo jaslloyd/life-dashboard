@@ -9,7 +9,11 @@ const InvestmentTable: React.FC<{
 }> = ({ portfolioItems, onPurchaseClick, searchPortfolio }) => {
   return (
     <Tile title="Investment Portfolio" className="InvestmentTable">
-      <input type="text" placeholder="search" onChange={searchPortfolio} />
+      <input
+        type="text"
+        placeholder="Enter Ticker or Name"
+        onChange={searchPortfolio}
+      />
       <table>
         <thead>
           <tr>

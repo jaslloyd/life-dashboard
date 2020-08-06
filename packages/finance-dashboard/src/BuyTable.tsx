@@ -33,7 +33,7 @@ const BuyTable: React.FC<{
               <input
                 type="number"
                 name="counter"
-                min="1"
+                min="0"
                 value={item.totalStockToBuy}
                 onChange={(e) => onItemUpdate(item.id, +e.target.value)}
               />
