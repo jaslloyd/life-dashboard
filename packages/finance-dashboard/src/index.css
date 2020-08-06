@@ -1,93 +1,93 @@
 body {
-    background-color: #f5f6fa;
+  background-color: #f5f6fa;
 }
 
 table {
-    width: 100%;
-    border-collapse: collapse;
-    position: relative;
-    text-align: left;
+  width: 100%;
+  border-collapse: collapse;
+  position: relative;
+  text-align: left;
 }
 
 th,
 td {
-    padding: 8px;
+  padding: 8px;
 }
 
 th {
-    position: sticky;
-    top: -20px;
-    box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
-    background: white;
+  position: sticky;
+  top: -20px;
+  box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
+  background: white;
 }
 
 tr:nth-child(even) {
-    background-color: #f2f2f2;
+  background-color: #f2f2f2;
 }
 
 .summary-panels {
-    display: grid;
-    grid-template-columns: 200px 200px 300px;
-    gap: 20px;
-    margin-bottom: 20px;
+  display: grid;
+  grid-template-columns: 200px 200px 300px;
+  gap: 20px;
+  margin-bottom: 20px;
 }
 
 .BuyTable {
-    margin-top: 20px;
+  margin-top: 20px;
 }
 
 .BuyTable tbody tr td:nth-child(4) {
-    width: 10%;
+  width: 10%;
 }
 
 .arrow {
-    border: solid black;
-    border-width: 0 3px 3px 0;
-    display: inline-block;
-    padding: 3px;
+  border: solid black;
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: 3px;
 }
 
 .right {
-    transform: rotate(-45deg);
+  transform: rotate(-45deg);
 }
 
 .left {
-    transform: rotate(135deg);
+  transform: rotate(135deg);
 }
 
 .Chart {
-    overflow: hidden;
+  overflow: hidden;
 }
 
 .negative {
-    color: red;
+  color: red;
 }
 
 .positive {
-    color: green;
+  color: green;
 }
 
 .InvestmentsChart {
-    margin-bottom: 20px;
-    max-width: 1000px;
+  margin-bottom: 20px;
+  max-width: 1000px;
 }
 
 @media only screen and (max-width: 768px) {
-    .InvestmentTable tr th:first-child,
-    .InvestmentTable tr th:nth-child(3),
-    .InvestmentTable tr th:nth-child(6),
-    .InvestmentTable tr td:first-child,
-    .InvestmentTable tr td:nth-child(3),
-    .InvestmentTable tr td:nth-child(6) {
-        display: none;
-    }
+  .InvestmentTable tr th:first-child,
+  .InvestmentTable tr th:nth-child(3),
+  .InvestmentTable tr th:nth-child(6),
+  .InvestmentTable tr td:first-child,
+  .InvestmentTable tr td:nth-child(3),
+  .InvestmentTable tr td:nth-child(6) {
+    display: none;
+  }
 
-    .summary-panels {
-        grid-template-columns: 1fr 1fr;
-    }
+  .summary-panels {
+    grid-template-columns: 1fr 1fr;
+  }
 
-    .InvestTotals,
-    .InvestTotals > .Tile {
-        max-width: 100%;
-    }
+  .InvestTotals,
+  .InvestTotals > .Tile {
+    max-width: 100%;
+  }
 }

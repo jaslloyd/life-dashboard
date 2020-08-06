@@ -1,16 +1,16 @@
 :root {
-    font-size: 16px;
-    --primary: #041e42;
-    /* --primary: #fff; */
+  font-size: 16px;
+  --primary: #041e42;
+  /* --primary: #fff; */
 }
 
 body {
-    margin: 0;
-    padding: 0;
-    background: #fdfdfd;
+  margin: 0;
+  padding: 0;
+  background: #fdfdfd;
 }
 
 main {
-    margin-left: 6rem;
-    padding: 10px;
+  margin-left: 6rem;
+  padding: 10px;
 }
