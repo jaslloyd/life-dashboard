@@ -10,8 +10,7 @@
   },
   "plugins": ["react"],
   "rules": {
-    "linebreak-style": ["error", "unix"],
-    "comma-dangle": ["error", "always-multiline"]
+    "linebreak-style": ["error", "unix"]
   },
   "settings": { "react": { "version": "detect" } },
   "overrides": [
@@ -39,8 +38,8 @@
       "plugins": ["react", "@typescript-eslint"],
       "rules": {
         "linebreak-style": ["error", "unix"],
-        "comma-dangle": ["error", "always-multiline"],
-        "@typescript-eslint/no-explicit-any": 0
+        "@typescript-eslint/no-explicit-any": 0,
+        "react/prop-types": 0
       },
       "settings": { "react": { "version": "detect" } }
     }

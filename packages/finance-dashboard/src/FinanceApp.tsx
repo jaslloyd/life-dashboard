@@ -12,7 +12,7 @@ const AVAILABLE_FUNDS = 1700
 const formatMoney = (value: number) => new Intl.NumberFormat().format(value)
 
 const random_rgba = () => {
-  var o = Math.round,
+  const o = Math.round,
     r = Math.random,
     s = 255
   return (
