@@ -28,7 +28,7 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
     PortfolioItem[]
   >(null)
   const [stockToPurchase, setStockToPurchase] = React.useState<StockToBuy[]>(
-    JSON.parse(localStorage.getItem('stockToPurchase')) || []
+    JSON.parse(localStorage.getItem('stockToPurchase') || '[]') as StockToBuy[]
   )
   const [availableFunds, setAvailableFunds] = React.useState(AVAILABLE_FUNDS)
   const [uniqueTypes, setUniqueTypes] = React.useState({})
