@@ -74,16 +74,15 @@ module.exports = (env) => {
       }),
       new ModuleFederationPlugin({
         name: 'finance',
-        library: { type: 'var', name: 'finance' },
         filename: 'remoteEntry.js',
         exposes: {
-          FinanceTile: './src/FinanceApp.tsx',
+          './FinanceTile': './src/FinanceApp.tsx',
         },
         //TODO: Fill in below later
         remotes: {
-          dashboardshell: 'dashboardshell',
+          dashboardshell: 'dashboardshell@http://localhost:3001/remoteEntry.js',
         },
-        shared: ['react', 'react-dom'],
+        shared: require('./package.json').dependencies,
       }),
       // The HtmlWebpackPlugin simplifies creation of HTML files to serve your webpack bundles. This is especially useful for webpack bundles that include a hash in the filename which changes every compilation
       new HtmlWebpackPlugin({
