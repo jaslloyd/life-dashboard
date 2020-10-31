@@ -32,6 +32,10 @@ tr:nth-child(even) {
   margin-bottom: 20px;
 }
 
+.summary-panels .g-span {
+  grid-column: 1 / span 2;
+}
+
 .BuyTable {
   margin-top: 20px;
   margin-bottom: 100px;
