@@ -30,6 +30,7 @@ export const authMachine = Machine<{}, AuthMachineSchema, AuthMachineEvents>(
       unauthorized: {
         on: {
           LOGGED_IN: 'authorized',
+          LOGIN: 'loading',
         },
       },
       loading: {
@@ -43,7 +44,8 @@ export const authMachine = Machine<{}, AuthMachineSchema, AuthMachineEvents>(
       logout: {},
       authorized: {
         on: {
-          LOGIN: 'checking',
+          //   LOGIN: 'LO'
+          // this should go to unauthorized...,
           LOGOUT: 'logout',
         },
       },
