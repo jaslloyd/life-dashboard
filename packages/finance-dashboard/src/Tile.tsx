@@ -16,6 +16,7 @@ const SkeltonTile: React.FC = () => (
   <div className="summary-panels">
     <div className="Tile Skeleton" />
     <div className="Tile Skeleton" />
+    <div className="Tile Skeleton" />
   </div>
 )
 

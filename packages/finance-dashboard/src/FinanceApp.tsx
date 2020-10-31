@@ -6,8 +6,10 @@ import BuyTable from './BuyTable'
 import InvestmentTable from './InvestmentTable'
 import { Doughnut } from 'react-chartjs-2'
 import { Portfolio, PortfolioItem, StockToBuy } from './types'
-
-const AVAILABLE_FUNDS = 1700
+import { fetchMachine } from './machine/financeAppMachine'
+import { useMachine } from '@xstate/react'
+import { send } from 'xstate'
+const AVAILABLE_FUNDS = 1500
 
 const formatMoney = (value: number) => new Intl.NumberFormat().format(value)
 
@@ -23,8 +25,7 @@ const random_rgba = () =>
   ')'
 
 const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
-  // TODO: This data is highly related to each other so use a useReducer
-  const [status, setStatus] = React.useState('loading')
+  const [current, send] = useMachine(fetchMachine)
   const [apiResult, setApiResult] = React.useState<Portfolio>(null)
   const [displayedPortfolio, setDisplayPortfolio] = React.useState<
     PortfolioItem[]
@@ -68,22 +69,21 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
         )
 
         setUniqueTypes(percentagesByType)
-        setStatus('idle')
+        send('SUCCESS')
       } else {
         if (res.status === 401) {
           console.log('Need to login again')
-          setStatus('showLogin')
+          send('ERROR_LOGIN')
         }
       }
     } catch (e) {
       console.error(e)
-      setStatus('error')
+      send('ERROR')
     }
   }
 
   const handleLogin = async (code: string) => {
     try {
-      setStatus('loading')
       const resp = await fetch(`http://localhost:3000/api/v1/login`, {
         headers: {
           'Content-Type': 'application/json',
@@ -155,7 +155,8 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
 
   return (
     <>
-      {status === 'idle' && (
+      {console.log(current)}
+      {current.matches('idle') && (
         <>
           <div className="summary-panels">
             <InvestTotals value={formatMoney(apiResult.overallTotalInEuro)} />
@@ -189,11 +190,11 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
         </>
       )}
 
-      {status == 'loading' && <SkeltonTile />}
+      {current.matches('loading') && <SkeltonTile />}
 
-      {status === 'error' && <h1>An unexpected error occurred...</h1>}
+      {current.matches('error') && <h1>An unexpected error occurred...</h1>}
 
-      {status === 'showLogin' && <Login onSubmit={handleLogin} />}
+      {current.matches('showLogin') && <Login onSubmit={handleLogin} />}
     </>
   )
 }
