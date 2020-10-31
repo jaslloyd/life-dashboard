@@ -45,7 +45,7 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
       const res = await fetch(`http://localhost:3000/api/v1/portfolio`, {
         credentials: 'include',
         headers: {
-          Authorization: localStorage.getItem('SESSION_ID') || '',
+          Authorization: sessionStorage.getItem('SESSION_ID') || '',
         },
       })
 
@@ -96,7 +96,7 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
 
       if (resp.ok) {
         const json = await resp.json()
-        localStorage.setItem('SESSION_ID', json.id)
+        sessionStorage.setItem('SESSION_ID', json.id)
         fetchData()
       } else {
         console.log('Response was not valid...')
@@ -155,7 +155,6 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
 
   return (
     <>
-      {console.log(current)}
       {current.matches('idle') && (
         <>
           <div className="summary-panels">

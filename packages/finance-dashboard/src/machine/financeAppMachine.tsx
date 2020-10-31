@@ -23,7 +23,11 @@ export const fetchMachine = createMachine({
       type: 'final',
     },
     showLogin: {
-      // Don't do anything yet...
+      on: {
+        SUCCESS: 'idle',
+        ERROR: 'error',
+        ERROR_LOGIN: 'showLogin',
+      },
     },
   },
 })
