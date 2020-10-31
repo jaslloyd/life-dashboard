@@ -1,12 +1,11 @@
 import React from 'react'
 import { Tile, SkeltonTile } from './Tile'
-import Login from './Login'
 import InvestTotals from './InvestTotals'
 import BuyTable from './BuyTable'
 import InvestmentTable from './InvestmentTable'
 import { Doughnut } from 'react-chartjs-2'
 import { Portfolio, PortfolioItem, StockToBuy } from './types'
-import { fetchMachine } from './machine/financeAppMachine'
+import { financeDashboard } from './machine/financeAppMachine'
 import { useMachine } from '@xstate/react'
 const AVAILABLE_FUNDS = 1500
 
@@ -24,7 +23,7 @@ const random_rgba = () =>
   ')'
 
 const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
-  const [current, send] = useMachine(fetchMachine)
+  const [current, send] = useMachine(financeDashboard)
   const [apiResult, setApiResult] = React.useState<Portfolio>(null)
   const [displayedPortfolio, setDisplayPortfolio] = React.useState<
     PortfolioItem[]
@@ -78,30 +77,6 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
     } catch (e) {
       console.error(e)
       send('ERROR')
-    }
-  }
-
-  const handleLogin = async (code: string) => {
-    try {
-      const resp = await fetch(`http://localhost:3000/api/v1/login`, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        method: 'POST',
-        body: JSON.stringify({
-          code,
-        }),
-      })
-
-      if (resp.ok) {
-        const json = await resp.json()
-        sessionStorage.setItem('SESSION_ID', json.id)
-        fetchData()
-      } else {
-        console.log('Response was not valid...')
-      }
-    } catch (e) {
-      console.log(e)
     }
   }
 
@@ -192,8 +167,6 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
       {current.matches('loading') && <SkeltonTile />}
 
       {current.matches('error') && <h1>An unexpected error occurred...</h1>}
-
-      {current.matches('showLogin') && <Login onSubmit={handleLogin} />}
     </>
   )
 }

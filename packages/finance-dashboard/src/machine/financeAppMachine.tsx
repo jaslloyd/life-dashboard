@@ -1,7 +1,7 @@
 import { createMachine } from 'xstate'
 
-export const fetchMachine = createMachine({
-  id: 'financeApp',
+export const financeDashboard = createMachine({
+  id: 'financeDashboard',
   initial: 'loading',
   context: {
     retries: 0,
