@@ -86,66 +86,12 @@ const InvestmentsByTypeChart: React.FC<{ types: Record<string, number> }> = ({
   </Tile>
 )
 
-const FinanceApp: React.FC<{ summary?: boolean; authMachineSend?: any }> = ({
-  summary = false,
-  authMachineSend,
-}) => {
-  const [current, send] = useMachine(financeDashboard)
-  const [apiResult, setApiResult] = React.useState<Portfolio>(null)
-  const [displayedPortfolio, setDisplayPortfolio] = React.useState<
-    PortfolioItem[]
-  >(null)
+const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
+  const [{ value, context, matches }, send] = useMachine(financeDashboard)
   const [stockToPurchase, setStockToPurchase] = React.useState<StockToBuy[]>(
     JSON.parse(localStorage.getItem('stockToPurchase') || '[]') as StockToBuy[]
   )
   const [availableFunds, setAvailableFunds] = React.useState(AVAILABLE_FUNDS)
-  const [uniqueTypes, setUniqueTypes] = React.useState({})
-
-  React.useEffect(() => {
-    fetchData()
-  }, [])
-
-  const fetchData = async () => {
-    try {
-      const res = await fetch(`http://localhost:3000/api/v1/portfolio`, {
-        credentials: 'include',
-        headers: {
-          Authorization: sessionStorage.getItem('SESSION_ID') || '',
-        },
-      })
-
-      if (res.ok) {
-        const resultJSON: Portfolio = await res.json()
-
-        setApiResult(resultJSON)
-        setDisplayPortfolio(resultJSON.portfolioItems)
-
-        const percentagesByType = resultJSON.portfolioItems.reduce(
-          (acc, curr) => {
-            if (acc[curr.productType]) {
-              acc[curr.productType] += curr.totalPositionValue
-            } else {
-              acc[curr.productType] = curr.totalPositionValue
-            }
-
-            return acc
-          },
-          {} as any
-        )
-
-        setUniqueTypes(percentagesByType)
-        send('SUCCESS')
-      } else {
-        if (res.status === 401) {
-          console.log('Need to login again')
-          authMachineSend('LOGOUT')
-        }
-      }
-    } catch (e) {
-      console.error(e)
-      send('ERROR')
-    }
-  }
 
   React.useEffect(() => {
     const total = stockToPurchase.reduce(
@@ -174,12 +120,13 @@ const FinanceApp: React.FC<{ summary?: boolean; authMachineSend?: any }> = ({
 
   const handlePortfolioSearch = (e) => {
     const value = (e.target.value as string).toLowerCase()
-    const filteredPortfolioData = apiResult.portfolioItems.filter(
+    const filteredPortfolioData = context.apiResult.portfolioItems.filter(
       (item) =>
         item.tickerSymbol.toLowerCase().includes(value) ||
         item.name.toLowerCase().includes(value)
     )
-    setDisplayPortfolio(filteredPortfolioData)
+    console.log(filteredPortfolioData)
+    // setDisplayPortfolio(filteredPortfolioData)
   }
 
   const handleDeleteClick = (id: string) => {
@@ -197,25 +144,31 @@ const FinanceApp: React.FC<{ summary?: boolean; authMachineSend?: any }> = ({
 
   return (
     <>
-      {current.matches('idle') && (
+      <span className="state">{value}</span>
+      {matches('idle') && (
         <>
+          <button onClick={console.log}>Refresh</button>
           <div className="summary-panels">
-            <button onClick={() => fetchData()}>Refresh</button>
-            <InvestTotals value={formatMoney(apiResult.overallTotalInEuro)} />
+            <InvestTotals
+              value={formatMoney(context.apiResult.overallTotalInEuro)}
+            />
             <InvestTotals
               title="Total + / -"
               value={formatMoney(
-                apiResult.overallTotalInEuro - apiResult.overBETotalInEuro
+                context.apiResult.overallTotalInEuro -
+                  context.apiResult.overBETotalInEuro
               )}
             />
-            <InvestmentsByTypeChart types={uniqueTypes} />
+            <InvestmentsByTypeChart types={context.percentagesByType} />
           </div>
           {!summary && (
             <>
-              <InvestmentsChart portfolioItems={apiResult.portfolioItems} />
+              <InvestmentsChart
+                portfolioItems={context.apiResult.portfolioItems}
+              />
 
               <InvestmentTable
-                portfolioItems={displayedPortfolio}
+                portfolioItems={context.apiResult.portfolioItems}
                 onPurchaseClick={handlePurchaseClick}
                 searchPortfolio={handlePortfolioSearch}
               />
@@ -232,9 +185,9 @@ const FinanceApp: React.FC<{ summary?: boolean; authMachineSend?: any }> = ({
         </>
       )}
 
-      {current.matches('loading') && <SkeltonTile />}
+      {matches('loading') && <SkeltonTile />}
 
-      {current.matches('error') && <h1>An unexpected error occurred...</h1>}
+      {matches('error') && <h1>An unexpected error occurred...</h1>}
     </>
   )
 }
