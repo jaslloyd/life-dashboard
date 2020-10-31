@@ -11,7 +11,7 @@ interface AuthMachineSchema {
 }
 
 type AuthMachineEvents =
-  | { type: 'LOGIN' }
+  | { type: 'LOGIN'; code: string }
   | { type: 'LOGOUT' }
   | { type: 'LOGGED_IN' }
 
@@ -34,7 +34,6 @@ export const authMachine = Machine<{}, AuthMachineSchema, AuthMachineEvents>(
         },
       },
       loading: {
-        // Login Failure here
         invoke: {
           src: 'performLogin',
           onDone: { target: 'authorized' },
@@ -44,9 +43,8 @@ export const authMachine = Machine<{}, AuthMachineSchema, AuthMachineEvents>(
       logout: {},
       authorized: {
         on: {
-          //   LOGIN: 'LO'
-          // this should go to unauthorized...,
-          LOGOUT: 'logout',
+          // Needs to clear session storage
+          LOGOUT: 'unauthorized',
         },
       },
     },
@@ -67,7 +65,7 @@ export const authMachine = Machine<{}, AuthMachineSchema, AuthMachineEvents>(
           return Promise.reject('Not Logged in')
         }
       },
-      performLogin: async (ctx, event: any) => {
+      performLogin: async (_, event: any) => {
         const resp = await fetch(`http://localhost:3000/api/v1/login`, {
           headers: {
             'Content-Type': 'application/json',

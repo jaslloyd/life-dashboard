@@ -13,7 +13,7 @@ const App: React.FC = () => {
       <span className="state">{current.value}</span>
       <h1>Finance Application</h1>
       {current.matches('checking') && <h1>Loading...</h1>}
-      {current.matches('authorized') && <FinanceApp />}
+      {current.matches('authorized') && <FinanceApp authMachineSend={send} />}
       {current.matches('unauthorized') && (
         <Login onSubmit={(code) => send('LOGIN', { code })} />
       )}
