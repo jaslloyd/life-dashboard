@@ -67,16 +67,24 @@ export const authMachine = Machine<{}, AuthMachineSchema, AuthMachineEvents>(
           return Promise.reject('Not Logged in')
         }
       },
-      performLogin: async (ctx, event) => {
+      performLogin: async (ctx, event: any) => {
         const resp = await fetch(`http://localhost:3000/api/v1/login`, {
           headers: {
             'Content-Type': 'application/json',
           },
           method: 'POST',
           body: JSON.stringify({
-            code: 'code',
+            code: event.code,
           }),
         })
+
+        if (resp.ok) {
+          const json = await resp.json()
+          sessionStorage.setItem('SESSION_ID', json.id)
+          return json
+        } else {
+          throw new Error('Bad Login')
+        }
       },
     },
   }
