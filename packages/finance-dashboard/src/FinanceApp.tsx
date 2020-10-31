@@ -8,7 +8,6 @@ import { Doughnut } from 'react-chartjs-2'
 import { Portfolio, PortfolioItem, StockToBuy } from './types'
 import { fetchMachine } from './machine/financeAppMachine'
 import { useMachine } from '@xstate/react'
-import { send } from 'xstate'
 const AVAILABLE_FUNDS = 1500
 
 const formatMoney = (value: number) => new Intl.NumberFormat().format(value)
@@ -132,10 +131,11 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
   }
 
   const handlePortfolioSearch = (e) => {
+    const value = (e.target.value as string).toLowerCase()
     const filteredPortfolioData = apiResult.portfolioItems.filter(
       (item) =>
-        item.tickerSymbol.includes(e.target.value) ||
-        item.name.includes(e.target.value)
+        item.tickerSymbol.toLowerCase().includes(value) ||
+        item.name.toLowerCase().includes(value)
     )
     setDisplayPortfolio(filteredPortfolioData)
   }
