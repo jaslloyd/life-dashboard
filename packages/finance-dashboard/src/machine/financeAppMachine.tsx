@@ -19,10 +19,19 @@ interface DashboardContext {
 
 type DashboardEvents = { type: 'FETCH' } | { type: 'FILTER' }
 
-export const investmentTable = Machine<{
-  stockToPurchase: StockToBuy[]
-  totalPurchasePrice: number
-}>(
+type InvestTableEvents =
+  | { type: 'ADD' }
+  | { type: 'DELETE' }
+  | { type: 'UPDATE' }
+
+export const investmentTable = Machine<
+  {
+    stockToPurchase: StockToBuy[]
+    totalPurchasePrice: number
+  },
+  any,
+  InvestTableEvents
+>(
   {
     id: 'investmentTable',
     initial: 'idle',
@@ -49,9 +58,6 @@ export const investmentTable = Machine<{
   },
   {
     actions: {
-      log: (ctx, event) => {
-        console.log({ ctx, event })
-      },
       updateAvailableAmount: assign((ctx, event: any) => ({
         totalPurchasePrice: ctx.stockToPurchase.reduce(
           (acc, curr) => acc + curr.currentStockValue * curr.totalStockToBuy,
