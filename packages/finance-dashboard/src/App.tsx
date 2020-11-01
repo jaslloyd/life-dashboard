@@ -8,13 +8,12 @@ import { authMachine } from './machine/authMachine'
 
 const App: React.FC = () => {
   const [current, send] = useMachine(authMachine)
+  const { value, context } = current
   return (
     <DashboardShell>
-      <span className="state">{current.value}</span>
+      <span className="state">{value}</span>
       <h1>Finance Application</h1>
-      <div className={`alert ${current.context.level}`}>
-        {current.context.message}
-      </div>
+      <div className={`alert ${context.level}`}>{context.message}</div>
       {current.matches('checking') && <h1>Loading...</h1>}
       {current.matches('authorized') && <FinanceApp />}
       {current.matches('unauthorized') && (
