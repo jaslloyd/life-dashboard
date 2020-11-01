@@ -87,7 +87,9 @@ const InvestmentsByTypeChart: React.FC<{ types: Record<string, number> }> = ({
 )
 
 const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
-  const [{ value, context, matches }, send] = useMachine(financeDashboard)
+  const [{ value, context, matches }, send, service] = useMachine(
+    financeDashboard
+  )
   const [stockToPurchase, setStockToPurchase] = React.useState<StockToBuy[]>(
     JSON.parse(localStorage.getItem('stockToPurchase') || '[]') as StockToBuy[]
   )
@@ -102,8 +104,18 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
     localStorage.setItem('stockToPurchase', JSON.stringify(stockToPurchase))
   }, [stockToPurchase])
 
+  React.useEffect(() => {
+    const subscription = service.subscribe((state) => {
+      // simple state logging
+      if (state.changed) {
+        console.log(state)
+      }
+    })
+
+    return subscription.unsubscribe
+  }, [service]) // note: service should never change
+
   const handlePurchaseClick = (line: PortfolioItem) => {
-    console.log(line)
     if (!stockToPurchase.find((stock) => stock.id === line.id)) {
       setStockToPurchase([
         ...stockToPurchase,
@@ -116,17 +128,6 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
         },
       ])
     }
-  }
-
-  const handlePortfolioSearch = (e) => {
-    const value = (e.target.value as string).toLowerCase()
-    const filteredPortfolioData = context.apiResult.portfolioItems.filter(
-      (item) =>
-        item.tickerSymbol.toLowerCase().includes(value) ||
-        item.name.toLowerCase().includes(value)
-    )
-    console.log(filteredPortfolioData)
-    // setDisplayPortfolio(filteredPortfolioData)
   }
 
   const handleDeleteClick = (id: string) => {
@@ -144,10 +145,12 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
 
   return (
     <>
-      <span className="state">{value}</span>
+      <span className="state">
+        {value} - {context.lastTimeUpdate}
+      </span>
       {matches('idle') && (
         <>
-          <button onClick={console.log}>Refresh</button>
+          <button onClick={() => send('FETCH')}>Refresh</button>
           <div className="summary-panels">
             <InvestTotals
               value={formatMoney(context.apiResult.overallTotalInEuro)}
@@ -170,7 +173,11 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
               <InvestmentTable
                 portfolioItems={context.apiResult.portfolioItems}
                 onPurchaseClick={handlePurchaseClick}
-                searchPortfolio={handlePortfolioSearch}
+                searchPortfolio={(e) =>
+                  send('FILTER', {
+                    value: (e.target.value as string).toLowerCase(),
+                  })
+                }
               />
               {stockToPurchase.length > 0 && (
                 <BuyTable

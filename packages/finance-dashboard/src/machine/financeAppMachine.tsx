@@ -1,18 +1,24 @@
 import { assign, createMachine } from 'xstate'
-import { Portfolio } from '../types'
+import { Portfolio, PortfolioItem } from '../types'
 
 interface DashboardContext {
+  lastTimeUpdate: String
   apiResult: Portfolio
-  portfolioItems: Pick<Portfolio, 'portfolioItems'>
+  portfolioItems: PortfolioItem[]
   percentagesByType: Record<string, number>
 }
 
-export const financeDashboard = createMachine(
+export const financeDashboard = createMachine<DashboardContext>(
   {
     id: 'financeDashboard',
     initial: 'loading',
     context: {
-      apiResult: {} as Portfolio,
+      lastTimeUpdate: new Date().toISOString(),
+      apiResult: {
+        overBETotalInEuro: 0,
+        overallTotalInEuro: 0,
+        portfolioItems: [],
+      },
       portfolioItems: [],
       percentagesByType: {},
     },
@@ -27,6 +33,10 @@ export const financeDashboard = createMachine(
       idle: {
         on: {
           FETCH: 'loading',
+          FILTER: {
+            // An event with no 'on' is a self transition
+            actions: ['filterDate', 'log'],
+          },
         },
       },
       error: {
@@ -36,7 +46,7 @@ export const financeDashboard = createMachine(
   },
   {
     services: {
-      getPortfolio: async (ctx, event) => {
+      getPortfolio: async (_) => {
         const res = await fetch(`http://localhost:3000/api/v1/portfolio`, {
           credentials: 'include',
           headers: {
@@ -46,7 +56,6 @@ export const financeDashboard = createMachine(
 
         if (res.ok) {
           const resultJSON: Portfolio = await res.json()
-
           return resultJSON
         } else {
           throw new Error(
@@ -57,6 +66,7 @@ export const financeDashboard = createMachine(
     },
     actions: {
       setPortfolioData: assign((_, event: any) => ({
+        lastTimeUpdate: new Date().toISOString(),
         apiResult: event.data,
         portfolioItems: event.data.portfolioItems,
         percentagesByType: event.data.portfolioItems.reduce((acc, curr) => {
@@ -68,6 +78,16 @@ export const financeDashboard = createMachine(
 
           return acc
         }, {} as any),
+      })),
+      log: (ctx, event) => {
+        console.log({ ctx, event })
+      },
+      filterDate: assign((ctx, event: any) => ({
+        portfolioItems: ctx.apiResult.portfolioItems.filter(
+          (item) =>
+            item.tickerSymbol.toLowerCase().includes(event.value) ||
+            item.name.toLowerCase().includes(event.value)
+        ),
       })),
     },
   }
