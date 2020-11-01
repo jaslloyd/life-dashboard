@@ -4,8 +4,8 @@ import InvestTotals from './InvestTotals'
 import BuyTable from './BuyTable'
 import InvestmentTable from './InvestmentTable'
 import { Doughnut } from 'react-chartjs-2'
-import { Portfolio, PortfolioItem, StockToBuy } from './types'
-import { financeDashboard } from './machine/financeAppMachine'
+import { PortfolioItem, StockToBuy } from './types'
+import { financeDashboard, investmentTable } from './machine/financeAppMachine'
 import { useMachine } from '@xstate/react'
 const AVAILABLE_FUNDS = 1500
 
@@ -88,52 +88,46 @@ const InvestmentsByTypeChart: React.FC<{ types: Record<string, number> }> = ({
 
 const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
   const [{ value, context, matches }, send] = useMachine(financeDashboard)
-  const [stockToPurchase, setStockToPurchase] = React.useState<StockToBuy[]>(
-    JSON.parse(localStorage.getItem('stockToPurchase') || '[]') as StockToBuy[]
-  )
-  const [availableFunds, setAvailableFunds] = React.useState(AVAILABLE_FUNDS)
-
-  React.useEffect(() => {
-    const total = stockToPurchase.reduce(
-      (acc, curr) => acc + curr.currentStockValue * curr.totalStockToBuy,
-      0
-    )
-    setAvailableFunds(+(AVAILABLE_FUNDS - total).toFixed(2))
-    localStorage.setItem('stockToPurchase', JSON.stringify(stockToPurchase))
-  }, [stockToPurchase])
+  const [currentTable, sendTable] = useMachine(investmentTable, {
+    context: {
+      stockToPurchase: JSON.parse(
+        localStorage.getItem('stockToPurchase') || '[]'
+      ) as StockToBuy[],
+    },
+  })
 
   const handlePurchaseClick = (line: PortfolioItem) => {
-    if (!stockToPurchase.find((stock) => stock.id === line.id)) {
-      setStockToPurchase([
-        ...stockToPurchase,
-        {
+    if (
+      !currentTable.context.stockToPurchase.find(
+        (stock) => stock.id === line.id
+      )
+    ) {
+      sendTable('ADD', {
+        value: {
           id: line.id,
           name: line.name,
           currentStockValue: line.currentStockValue,
           breakEvenPrice: line.stockValueBreakEvenPrice,
           totalStockToBuy: 1,
         },
-      ])
+      })
     }
   }
 
-  const handleDeleteClick = (id: string) => {
-    const newStocks = stockToPurchase.filter((stock) => stock.id !== id)
-    setStockToPurchase(newStocks)
-  }
-
   const handleItemUpdate = (id: string, totalStockToBuy: number) => {
-    const stockCopy = [...stockToPurchase]
-    const itemToUpdate = stockToPurchase.findIndex((stock) => stock.id === id)
-    stockCopy[itemToUpdate].totalStockToBuy = totalStockToBuy
-
-    setStockToPurchase(stockCopy)
+    // const stockCopy = [...stockToPurchase]
+    // const itemToUpdate = stockToPurchase.findIndex((stock) => stock.id === id)
+    // stockCopy[itemToUpdate].totalStockToBuy = totalStockToBuy
+    // setStockToPurchase(stockCopy)
   }
 
   return (
     <>
       <span className="state">
-        {JSON.stringify(value)} - {context.lastTimeUpdate}
+        Dashboard Machine: {JSON.stringify(value)} - {context.lastTimeUpdate}
+      </span>
+      <span className="state" style={{ marginTop: '50px' }}>
+        Table Machine: {JSON.stringify(currentTable.value)}
       </span>
       {matches('idle') && (
         <>
@@ -166,12 +160,16 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
                   })
                 }
               />
-              {stockToPurchase.length > 0 && (
+              {currentTable.context.stockToPurchase.length > 0 && (
                 <BuyTable
-                  portfolioData={stockToPurchase}
-                  onDeleteClick={handleDeleteClick}
+                  portfolioData={currentTable.context.stockToPurchase}
+                  onDeleteClick={(id) => sendTable('DELETE', { value: id })}
                   onItemUpdate={handleItemUpdate}
-                  availableFunds={availableFunds}
+                  availableFunds={
+                    +(
+                      AVAILABLE_FUNDS - currentTable.context.totalPurchasePrice
+                    ).toFixed(2)
+                  }
                 />
               )}
             </>

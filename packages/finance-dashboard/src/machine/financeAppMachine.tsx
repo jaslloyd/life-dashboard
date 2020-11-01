@@ -1,5 +1,5 @@
-import { assign, Machine } from 'xstate'
-import { Portfolio, PortfolioItem } from '../types'
+import { assign, Machine, send } from 'xstate'
+import { Portfolio, PortfolioItem, StockToBuy } from '../types'
 
 interface FetchMachineSchema {
   states: {
@@ -14,9 +14,58 @@ interface DashboardContext {
   apiResult: Portfolio
   portfolioItems: PortfolioItem[]
   percentagesByType: Record<string, number>
+  investTableRef: any
 }
 
 type DashboardEvents = { type: 'FETCH' } | { type: 'FILTER' }
+
+export const investmentTable = Machine<{
+  stockToPurchase: StockToBuy[]
+  totalPurchasePrice: number
+}>(
+  {
+    id: 'investmentTable',
+    initial: 'idle',
+    context: {
+      stockToPurchase: [],
+      totalPurchasePrice: 0,
+    },
+    states: {
+      idle: {
+        entry: 'updateAvailableAmount',
+        on: {
+          ADD: {
+            actions: ['addStock', 'updateAvailableAmount'],
+          },
+          DELETE: {
+            actions: ['deleteStock', 'updateAvailableAmount'],
+          },
+        },
+      },
+    },
+  },
+  {
+    actions: {
+      log: (ctx, event) => {
+        console.log({ ctx, event })
+      },
+      updateAvailableAmount: assign((ctx, event: any) => ({
+        totalPurchasePrice: ctx.stockToPurchase.reduce(
+          (acc, curr) => acc + curr.currentStockValue * curr.totalStockToBuy,
+          0
+        ),
+      })),
+      addStock: assign((ctx, event: any) => ({
+        stockToPurchase: [...ctx.stockToPurchase, event.value],
+      })),
+      deleteStock: assign((ctx, event: any) => ({
+        stockToPurchase: ctx.stockToPurchase.filter(
+          (stock) => stock.id !== event.value
+        ),
+      })),
+    },
+  }
+)
 
 export const financeDashboard = Machine<
   DashboardContext,
@@ -35,12 +84,16 @@ export const financeDashboard = Machine<
       },
       portfolioItems: [],
       percentagesByType: {},
+      investTableRef: null,
     },
     states: {
       loading: {
         invoke: {
           src: 'getPortfolio',
-          onDone: { target: 'idle', actions: 'setPortfolioData' },
+          onDone: {
+            target: 'idle',
+            actions: 'setPortfolioData',
+          },
           onError: { target: 'error' },
         },
       },
