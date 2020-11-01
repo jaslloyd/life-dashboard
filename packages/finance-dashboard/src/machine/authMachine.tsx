@@ -1,4 +1,4 @@
-import { Machine } from 'xstate'
+import { Machine, assign } from 'xstate'
 
 interface AuthMachineSchema {
   states: {
@@ -15,10 +15,23 @@ type AuthMachineEvents =
   | { type: 'LOGOUT' }
   | { type: 'LOGGED_IN' }
 
-export const authMachine = Machine<{}, AuthMachineSchema, AuthMachineEvents>(
+interface AuthMachineContext {
+  message: string
+  level: 'ERROR' | 'SUCCESS' | ''
+}
+
+export const authMachine = Machine<
+  AuthMachineContext,
+  AuthMachineSchema,
+  AuthMachineEvents
+>(
   {
-    id: 'auth',
+    id: 'authentication',
     initial: 'checking',
+    context: {
+      message: '',
+      level: '',
+    },
     states: {
       checking: {
         invoke: {
@@ -37,14 +50,18 @@ export const authMachine = Machine<{}, AuthMachineSchema, AuthMachineEvents>(
         invoke: {
           src: 'performLogin',
           onDone: { target: 'authorized' },
-          onError: { target: 'unauthorized' },
+          onError: { target: 'unauthorized', actions: ['onError', 'log'] },
         },
       },
-      logout: {},
+      logout: {
+        entry: 'doLogout',
+        on: {
+          LOGIN: 'loading',
+        },
+      },
       authorized: {
         on: {
-          // Needs to clear session storage
-          LOGOUT: 'unauthorized',
+          LOGOUT: 'logout',
         },
       },
     },
@@ -84,6 +101,18 @@ export const authMachine = Machine<{}, AuthMachineSchema, AuthMachineEvents>(
           throw new Error('Bad Login')
         }
       },
+    },
+    actions: {
+      log: (ctx, event) => {
+        console.log({ ctx, event })
+      },
+      doLogout: (ctx, event) => {
+        sessionStorage.removeItem('SESSION_ID')
+      },
+      onError: assign((ctx: AuthMachineContext, event: any) => ({
+        message: event.data.toString(),
+        level: 'ERROR',
+      })),
     },
   }
 )

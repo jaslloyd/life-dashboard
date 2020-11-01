@@ -12,6 +12,9 @@ const App: React.FC = () => {
     <DashboardShell>
       <span className="state">{current.value}</span>
       <h1>Finance Application</h1>
+      <div className={`alert ${current.context.level}`}>
+        {current.context.message}
+      </div>
       {current.matches('checking') && <h1>Loading...</h1>}
       {current.matches('authorized') && <FinanceApp />}
       {current.matches('unauthorized') && (

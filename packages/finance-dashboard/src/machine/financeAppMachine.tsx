@@ -141,7 +141,7 @@ export const financeDashboard = Machine<
           FETCH: 'loading',
           FILTER: {
             // An event with no 'on' is a self transition
-            actions: 'filterDate',
+            actions: 'filterInvestmentTable',
           },
         },
       },
@@ -188,7 +188,7 @@ export const financeDashboard = Machine<
       log: (ctx, event) => {
         console.log({ ctx, event })
       },
-      filterDate: assign((ctx, event: any) => ({
+      filterInvestmentTable: assign((ctx, event: any) => ({
         portfolioItems: ctx.apiResult.portfolioItems.filter(
           (item) =>
             item.tickerSymbol.toLowerCase().includes(event.value) ||
