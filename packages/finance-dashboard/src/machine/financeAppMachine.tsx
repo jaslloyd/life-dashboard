@@ -43,6 +43,7 @@ export const investmentTable = Machine<
       idle: {
         entry: 'updateAvailableAmount',
         on: {
+          // TODO: Two of these actions always happen on every event, look at docs
           ADD: {
             actions: [
               'addStock',
@@ -104,6 +105,7 @@ export const investmentTable = Machine<
   }
 )
 
+// TODO: Make this a generic Data / Fetch machine kina like: https://github.com/cypress-io/cypress-realworld-app/blob/develop/src/machines/dataMachine.ts
 export const financeDashboard = Machine<
   DashboardContext,
   FetchMachineSchema,
