@@ -44,13 +44,25 @@ export const investmentTable = Machine<
         entry: 'updateAvailableAmount',
         on: {
           ADD: {
-            actions: ['addStock', 'updateAvailableAmount'],
+            actions: [
+              'addStock',
+              'updateAvailableAmount',
+              'updateLocalStorage',
+            ],
           },
           DELETE: {
-            actions: ['deleteStock', 'updateAvailableAmount'],
+            actions: [
+              'deleteStock',
+              'updateAvailableAmount',
+              'updateLocalStorage',
+            ],
           },
           UPDATE: {
-            actions: ['updateStock', 'updateAvailableAmount'],
+            actions: [
+              'updateStock',
+              'updateAvailableAmount',
+              'updateLocalStorage',
+            ],
           },
         },
       },
@@ -58,6 +70,12 @@ export const investmentTable = Machine<
   },
   {
     actions: {
+      updateLocalStorage: (ctx, event) => {
+        localStorage.setItem(
+          'stockToPurchase',
+          JSON.stringify(ctx.stockToPurchase)
+        )
+      },
       updateAvailableAmount: assign((ctx, event: any) => ({
         totalPurchasePrice: ctx.stockToPurchase.reduce(
           (acc, curr) => acc + curr.currentStockValue * curr.totalStockToBuy,
