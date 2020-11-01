@@ -115,10 +115,12 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
   }
 
   const handleItemUpdate = (id: string, totalStockToBuy: number) => {
-    // const stockCopy = [...stockToPurchase]
-    // const itemToUpdate = stockToPurchase.findIndex((stock) => stock.id === id)
-    // stockCopy[itemToUpdate].totalStockToBuy = totalStockToBuy
-    // setStockToPurchase(stockCopy)
+    sendTable('UPDATE', {
+      value: {
+        id,
+        totalStockToBuy,
+      },
+    })
   }
 
   return (

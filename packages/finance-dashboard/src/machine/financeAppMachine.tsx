@@ -40,6 +40,9 @@ export const investmentTable = Machine<{
           DELETE: {
             actions: ['deleteStock', 'updateAvailableAmount'],
           },
+          UPDATE: {
+            actions: ['updateStock', 'updateAvailableAmount'],
+          },
         },
       },
     },
@@ -63,6 +66,16 @@ export const investmentTable = Machine<{
           (stock) => stock.id !== event.value
         ),
       })),
+      updateStock: (ctx, event) => {
+        const stockCopy = ctx.stockToPurchase
+        const itemToUpdate = stockCopy.findIndex(
+          (stock) => stock.id === event.value.id
+        )
+        stockCopy[itemToUpdate].totalStockToBuy = event.value.totalStockToBuy
+        return assign({
+          stockToPurchase: stockCopy,
+        })
+      },
     },
   }
 )
