@@ -2,7 +2,7 @@ import { assign, createMachine } from 'xstate'
 import { Portfolio, PortfolioItem } from '../types'
 
 interface DashboardContext {
-  lastTimeUpdate: String
+  lastTimeUpdate: string
   apiResult: Portfolio
   portfolioItems: PortfolioItem[]
   percentagesByType: Record<string, number>

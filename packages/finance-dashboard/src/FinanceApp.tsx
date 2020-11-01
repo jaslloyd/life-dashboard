@@ -87,9 +87,7 @@ const InvestmentsByTypeChart: React.FC<{ types: Record<string, number> }> = ({
 )
 
 const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
-  const [{ value, context, matches }, send, service] = useMachine(
-    financeDashboard
-  )
+  const [{ value, context, matches }, send] = useMachine(financeDashboard)
   const [stockToPurchase, setStockToPurchase] = React.useState<StockToBuy[]>(
     JSON.parse(localStorage.getItem('stockToPurchase') || '[]') as StockToBuy[]
   )
@@ -103,17 +101,6 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
     setAvailableFunds(+(AVAILABLE_FUNDS - total).toFixed(2))
     localStorage.setItem('stockToPurchase', JSON.stringify(stockToPurchase))
   }, [stockToPurchase])
-
-  React.useEffect(() => {
-    const subscription = service.subscribe((state) => {
-      // simple state logging
-      if (state.changed) {
-        console.log(state)
-      }
-    })
-
-    return subscription.unsubscribe
-  }, [service]) // note: service should never change
 
   const handlePurchaseClick = (line: PortfolioItem) => {
     if (!stockToPurchase.find((stock) => stock.id === line.id)) {
@@ -146,7 +133,7 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
   return (
     <>
       <span className="state">
-        {value} - {context.lastTimeUpdate}
+        {JSON.stringify(value)} - {context.lastTimeUpdate}
       </span>
       {matches('idle') && (
         <>
@@ -171,7 +158,7 @@ const FinanceApp: React.FC<{ summary?: boolean }> = ({ summary = false }) => {
               />
 
               <InvestmentTable
-                portfolioItems={context.apiResult.portfolioItems}
+                portfolioItems={context.portfolioItems}
                 onPurchaseClick={handlePurchaseClick}
                 searchPortfolio={(e) =>
                   send('FILTER', {
