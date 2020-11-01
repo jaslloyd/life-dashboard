@@ -1,5 +1,13 @@
-import { assign, createMachine } from 'xstate'
+import { assign, Machine } from 'xstate'
 import { Portfolio, PortfolioItem } from '../types'
+
+interface FetchMachineSchema {
+  states: {
+    loading: {}
+    idle: {}
+    error: {}
+  }
+}
 
 interface DashboardContext {
   lastTimeUpdate: string
@@ -8,7 +16,13 @@ interface DashboardContext {
   percentagesByType: Record<string, number>
 }
 
-export const financeDashboard = createMachine<DashboardContext>(
+type DashboardEvents = { type: 'FETCH' } | { type: 'FILTER' }
+
+export const financeDashboard = Machine<
+  DashboardContext,
+  FetchMachineSchema,
+  DashboardEvents
+>(
   {
     id: 'financeDashboard',
     initial: 'loading',
@@ -35,7 +49,7 @@ export const financeDashboard = createMachine<DashboardContext>(
           FETCH: 'loading',
           FILTER: {
             // An event with no 'on' is a self transition
-            actions: ['filterDate', 'log'],
+            actions: 'filterDate',
           },
         },
       },
