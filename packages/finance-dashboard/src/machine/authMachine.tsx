@@ -4,6 +4,7 @@ interface AuthMachineSchema {
   states: {
     checking: {}
     unauthorized: {}
+    signup: {}
     loading: {}
     logout: {}
     authorized: {}
@@ -14,6 +15,8 @@ type AuthMachineEvents =
   | { type: 'LOGIN'; code: string }
   | { type: 'LOGOUT' }
   | { type: 'LOGGED_IN' }
+  | { type: 'SIGNUP' }
+  | { type: 'REFRESH_TOKEN' }
 
 interface AuthMachineContext {
   message: string
@@ -44,11 +47,19 @@ export const authMachine = Machine<
         on: {
           LOGGED_IN: 'authorized',
           LOGIN: 'loading',
+          SIGNUP: 'signup',
+        },
+      },
+      signup: {
+        invoke: {
+          src: 'doSignup',
+          onDone: { target: 'unauthorized' },
+          onError: { target: 'unauthorized', actions: 'onError' },
         },
       },
       loading: {
         invoke: {
-          src: 'performLogin',
+          src: 'doLogin',
           onDone: { target: 'authorized' },
           onError: { target: 'unauthorized', actions: ['onError', 'log'] },
         },
@@ -62,12 +73,16 @@ export const authMachine = Machine<
       authorized: {
         on: {
           LOGOUT: 'logout',
+          REFRESH_TOKEN: 'checking',
         },
       },
     },
   },
   {
     services: {
+      doSignup: () => {
+        return Promise.resolve('Signed up')
+      },
       isUserLoggedIn: async (_) => {
         const resp = await fetch(`http://localhost:3000/api/v1/portfolio`, {
           credentials: 'include',
@@ -82,7 +97,7 @@ export const authMachine = Machine<
           return Promise.reject('Not Logged in')
         }
       },
-      performLogin: async (_, event: any) => {
+      doLogin: async (_, event: any) => {
         const resp = await fetch(`http://localhost:3000/api/v1/login`, {
           headers: {
             'Content-Type': 'application/json',
@@ -112,6 +127,10 @@ export const authMachine = Machine<
       onError: assign((ctx: AuthMachineContext, event: any) => ({
         message: event.data.toString(),
         level: 'ERROR',
+      })),
+      onSuccess: assign((ctx: AuthMachineContext, event: any) => ({
+        user: event.data.user,
+        message: event.data,
       })),
     },
   }
