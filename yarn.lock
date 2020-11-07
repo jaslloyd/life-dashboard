@@ -1070,6 +1070,12 @@
     npmlog "^4.1.2"
     write-file-atomic "^2.3.0"
 
+"@life-dashboard/dashboard@file:packages/dashboard-shell":
+  version "0.0.0"
+  dependencies:
+    react "^16.13.1"
+    react-dom "^16.13.1"
+
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/@mrmlnc/readdir-enhanced/-/readdir-enhanced-2.2.1.tgz#524af240d1a360527b730475ecfa1344aa540dde"

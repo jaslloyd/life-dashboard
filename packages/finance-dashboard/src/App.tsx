@@ -4,10 +4,10 @@ import FinanceApp from './FinanceApp'
 import Login from './Login'
 import './index.css'
 import { useMachine } from '@xstate/react'
-import { authMachine } from './machine/authMachine'
+import { authMachineWithConfig } from './machine/authMachine'
 
 const App: React.FC = () => {
-  const [current, send] = useMachine(authMachine)
+  const [current, send] = useMachine(authMachineWithConfig)
   const { value, context } = current
   return (
     <DashboardShell>
